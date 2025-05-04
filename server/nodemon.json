@@ -1,0 +1,6 @@
+{
+    "watch": ["../client"],
+    "ext": "js, json, html, css", 
+    "exec": "node server.js"
+  }
+  

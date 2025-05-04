@@ -1,4 +1,4 @@
-class QuestionCard {
+export class QuestionCard {
     constructor(index, question, options, onSelectCallback=null) {
         this.index = index;
         this.question = question;
@@ -17,25 +17,27 @@ class QuestionCard {
     render(parentId) {
         const optionsHtml = this.options
         .map((option, i) => `
-            <label class="option" for="option-${this.index}-${i}">
-                <input type="radio" id="option-${this.index}-${i} name="${this.index}" value="${option}">
-                ${option}
-            </label>
+            <li class="option">
+                <label class="option" for="option-${this.index}-${i}">
+                    <input type="radio" id="option-${this.index}-${i}" name="${this.index}" value="${option}">
+                    ${option}
+                </label>
+            </li>
         `).join('');
 
-        const htmlContent = `
-            <li class="question-card">
-                <fieldset>
-                    <legend class="question">${question}</legend>
-                    ${optionsHtml}
-                </fieldset>
-            </li>
-        `
+        const liElement = document.createElement('li');
+        liElement.classList.add('question-card');
+        liElement.id = `question-${this.index}`;
+
+        liElement.innerHTML = `
+            <p>${this.question}</p>
+            <ul class="options">
+                ${optionsHtml}
+            </ul>
+        `;
         
         const parent = document.getElementById(parentId);
-        parent.insertAdjacentElement('beforeend', htmlContent);
-
-        const questionElement = document.getElementById(`question-${this.index}`);
-        questionElement.addEventListener('click', this.handleSelect.bind(this));
+        parent.appendChild(liElement);
+        liElement.addEventListener('click', this.handleSelect.bind(this));
     }
 }
