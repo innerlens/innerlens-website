@@ -1,27 +1,16 @@
-const express = require('express');
-const path = require('path');
+import 'dotenv/config'
+
+import express from 'express';
+import { authRouter } from './routers/authRouter.js';
+import { userRouter } from './routers/userRouter.js';
+
 const app = express();
-const apiController = require('./controllers/api_controller');
-
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../client')));
 
-app.use('/api', apiController);
-
-app.get('/{*any}', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/index.html'));
-});
-
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    error: 'Something went wrong!',
-    message: process.env.NODE_ENV === 'development' ? err.message : undefined
-  });
-});
+app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
