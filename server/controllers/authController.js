@@ -1,5 +1,5 @@
 import { verifyGoogleJwt } from '../services/authService.js';
-import { createUser } from '../services/userService.js';
+import { userRepository } from '../repositories/userRepository.js';
 
 export async function getGoogleJwt(req, res) {
 
@@ -35,12 +35,21 @@ export async function getGoogleJwt(req, res) {
   
       const { id_token : jwt } = await response.json();
       const payload = await verifyGoogleJwt(jwt);
-  
       const { sub, email, name } = payload;
-      const user = await createUser(sub, name, email);
+
+      // check if user exists
+      const existingUser = await userRepository.findById(sub);
+
+      if (!existingUser) {
+        await userRepository.create({
+          google_id: sub,
+          username: name,
+          email: email,
+        });
+      }
 
       // return jwt
-      res.json({ jwt });
+      res.status(200).json({ jwt });
 
     } catch (err) {
       console.error(err);
