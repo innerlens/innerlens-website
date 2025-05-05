@@ -18,7 +18,7 @@ export const TestPage = {
         testPage.id = "test-page";
 
         testPage.innerHTML = `
-            <h1>Personality Test</h1>
+            <h1 id="test-page-heading">Personality Test</h1>
             <ul id="${questionListId}"></ul>
         `;
 
