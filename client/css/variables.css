@@ -1,5 +1,5 @@
 :root {
-    --gap-l: 80px;
+    --gap-l: 60px;
 
     --orange: #C57A48;
     --purple: #3F22BF;
@@ -11,6 +11,6 @@
 
 @media (max-width: 800px) {
     :root {
-        --gap-l: 40px;
+        --gap-l: 30px;
     }
 }

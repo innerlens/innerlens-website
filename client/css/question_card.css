@@ -1,3 +1,7 @@
+p {
+    font-size: 1.5rem;
+}
+
 li.question-card {
     display: flex;
     flex-direction: column;
@@ -19,6 +23,9 @@ li.question-card .option {
 }
 
 li.option {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
     position: relative;
     background: transparent;
     border-radius: 16px;
@@ -52,3 +59,6 @@ li.option:has(input[type="radio"]:checked) {
     background: linear-gradient(to bottom right, var(--purple), var(--orange));
   }
   
+label.option {
+    font-size: 1.5rem;
+}
