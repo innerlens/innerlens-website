@@ -11,8 +11,7 @@ import { authMiddleware } from '../middleware/authMiddleware.js';
 import { validateRequestBody, validateUrlParams } from '../middleware/validateMiddleware.js';
 
 export const userRouter = express.Router();
-
-userRouter.use(authMiddleware); // protect all routes
+userRouter.use(authMiddleware);
 
 /* User routes (Todo: Remove later, these are just for reference but won't be used by clients) */
 
