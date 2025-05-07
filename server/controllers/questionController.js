@@ -23,3 +23,14 @@ export async function getAllQuestions(req, res) {
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Could not fetch questions', detail: err.message });
   }
 }
+
+export async function getAllQuestionsByDichotomyId(req, res) {
+  try {
+    const questions = await questionRepository.findAllByKey('dichotomy_id', req.params.id);
+    res.status(HTTP_STATUS.OK).json(questions);
+
+  } catch (err) {
+    console.error('Get questions by dichotomy failed:', err.message);
+    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Could not fetch questions for dichotomy', detail: err.message });
+  }
+}

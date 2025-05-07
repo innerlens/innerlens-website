@@ -1,7 +1,7 @@
 import express from 'express'
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { validateUrlParams } from '../middleware/validateMiddleware.js';
-import { getQuestionById, getAllQuestions } from '../controllers/questionController.js';
+import { getQuestionById, getAllQuestions, getAllQuestionsByDichotomyId } from '../controllers/questionController.js';
 
 export const questionRouter = express.Router();
 // questionRouter.use(authMiddleware);
@@ -16,3 +16,10 @@ questionRouter.get('/:id',
   }),
   getQuestionById
 );
+
+questionRouter.get('/dichotomy/:id',
+  validateUrlParams({
+    id: { type: 'integer', required: true }
+  }),
+  getAllQuestionsByDichotomyId
+)

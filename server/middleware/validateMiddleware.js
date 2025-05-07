@@ -29,9 +29,7 @@ function validateSchema(body, schema) {
         }
 
         if (rule.type === "integer") {
-            if (!parseInt(value)) errors.push(`${key} must be of type integer`);
-        } else if (rule.type === "float") {
-            if (!parseFloat(value)) errors.push(`${key} must be of type float`);
+            if (!/^\d+$/.test(value)) errors.push(`${key} must be of type integer`);
         } else {
             if (typeof value !== rule.type) errors.push(`${key} must be of type ${rule.type}`);
         }
