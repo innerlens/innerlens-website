@@ -1,4 +1,4 @@
-import { connectAndQuery } from '../config/dbConfig.js';
+import { queryDb } from '../config/dbConfig.js';
 
 export class BaseRepository {
   constructor(tableName, primaryKey = 'id') {
@@ -8,13 +8,19 @@ export class BaseRepository {
 
   async findById(id) {
     const query = `SELECT * FROM ${this.table} WHERE ${this.pk} = $1 LIMIT 1`;
-    const result = await connectAndQuery(query, [id]);
+    const result = await queryDb(query, [id]);
+    return result.rows[0] || null;
+  }
+
+  async findByKey(columnName, value) {
+    const query = `SELECT * FROM ${this.table} WHERE ${columnName} = $1 LIMIT 1`;
+    const result = await queryDb(query, [value]);
     return result.rows[0] || null;
   }
 
   async findAll() {
     const query = `SELECT * FROM ${this.table}`;
-    const result = await connectAndQuery(query);
+    const result = await queryDb(query);
     return result.rows;
   }
 
@@ -28,7 +34,7 @@ export class BaseRepository {
       VALUES (${placeholders.join(', ')})
       RETURNING *`;
 
-    const result = await connectAndQuery(query, values);
+    const result = await queryDb(query, values);
     return result.rows[0];
   }
 
@@ -43,13 +49,13 @@ export class BaseRepository {
       WHERE ${this.pk} = $${keys.length + 1}
       RETURNING *`;
 
-    const result = await connectAndQuery(query, [...values, id]);
+    const result = await queryDb(query, [...values, id]);
     return result.rows[0];
   }
 
   async delete(id) {
     const query = `DELETE FROM ${this.table} WHERE ${this.pk} = $1 RETURNING *`;
-    const result = await connectAndQuery(query, [id]);
+    const result = await queryDb(query, [id]);
     return result.rows[0];
   }
 }

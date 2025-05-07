@@ -1,60 +1,84 @@
 import { userRepository } from '../repositories/userRepository.js';
+import { HTTP_STATUS } from '../utils/httpStatus.js';
 
 export async function getUserById(req, res) {
-  const user = await userRepository.findById(req.params.id);
-  if (!user) return res.status(404).json({ error: 'User not found' });
-  res.json(user);
+  try {
+    const user = await userRepository.findById(req.params.id);
+    if (!user) return res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'User not found' });
+    res.status(HTTP_STATUS.OK).json(user);
+
+  } catch (err) {
+    console.error('Get user failed:', err.message);
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Could not retrieve user', detail: err.message });
+  }
 }
 
 export async function createUser(req, res) {
     try {
-      const { google_id, username, email } = req.body;
-  
-      if (!google_id || !username || !email) {
-        return res.status(400).json({ error: 'Missing required fields' });
+      const { google_sub, username, email } = req.body;
+
+      if (await userRepository.findByKey('google_sub', google_sub)) {
+        return res.status(HTTP_STATUS.CONFLICT).json({ error: 'User already exists' });
+      }
+      if (await userRepository.findByKey('email', email)) {
+        return res.status(HTTP_STATUS.CONFLICT).json({ error: 'Email already taken' });
       }
   
-      const existing = await userRepository.findById(google_id);
-      if (existing) return res.status(409).json({ error: 'User already exists' });
-  
-      const user = await userRepository.create({ google_id, username, email });
-      res.status(201).json(user);
+      const user = await userRepository.create({ google_sub, username, email });
+      res.status(HTTP_STATUS.CREATED).json(user);
+
     } catch (err) {
       console.error('Create user failed:', err.message);
-      return res.status(400).json({ error: 'Invalid input', detail: err.message });
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Could not create user', detail: err.message });
     }
   }  
 
   export async function updateUser(req, res) {
     try {
       const { id } = req.params;
+
       const { username, email } = req.body;
-  
       if (!username && !email) {
-        return res.status(400).json({ error: 'At least one field (username or email) must be provided' });
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'At least one field must be provided' });
       }
-  
-      const updated = await userRepository.update(id, req.body);
-  
-      if (!updated) {
-        return res.status(404).json({ error: 'User not found' });
+
+      if (await userRepository.findByKey('email', email)) {
+        return res.status(HTTP_STATUS.CONFLICT).json({ error: 'Email already taken' });
       }
-  
-      res.json(updated);
+
+      const updatedUser = await userRepository.update(id, { username, email });  
+      res.status(HTTP_STATUS.OK).json(updatedUser);
+
     } catch (err) {
       console.error('Update user failed:', err.message);
-      res.status(400).json({ error: 'Invalid input', detail: err.message });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Could not update user', detail: err.message });
     }
   }  
 
 export async function deleteUser(req, res) {
-  const { id } = req.params;
-  const deleted = await userRepository.delete(id);
-  if (!deleted) return res.status(404).json({ error: 'User not found' });
-  res.status(204).send();
+  try {
+    const { id } = req.params;
+
+    if (!await userRepository.findById(id)) {
+      return res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'User not found' });
+    }
+
+    const deleted = await userRepository.delete(id);
+    res.status(HTTP_STATUS.NO_CONTENT).send();
+
+  } catch (err) {
+    console.error('Delete user failed:', err.message);
+    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Could not delete user', detail: err.message });
+  }
 }
 
 export async function getAllUsers(req, res) {
-  const users = await userRepository.findAll();
-  res.json(users);
+  try {
+    const users = await userRepository.findAll();
+    res.status(HTTP_STATUS.OK).json(users);
+
+  } catch (err) {
+    console.error('Get users failed:', err.message);
+    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Could fetch users', detail: err.message });
+  }
 }

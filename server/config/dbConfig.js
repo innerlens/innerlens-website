@@ -8,7 +8,17 @@ const db = new Pool({
   port: process.env.DATABASE_PORT,
 });
 
-export async function connectAndQuery(queryString, values) {
+export async function queryDb(queryString, values) {
+
+  console.log(`
+    Executing DB Query:
+    ------------------------------------------------------------------------------
+    ${queryString.trim()}
+    ------------------------------------------------------------------------------
+    Values : [${values}]
+    ______________________________________________________________________________
+    `);
+
   const res = await db.query(queryString, values);
   return res;
 }
