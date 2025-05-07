@@ -19,7 +19,7 @@ userRouter.get('/', getAllUsers);
 
 userRouter.get('/:id', 
   validateUrlParams({
-    id: { type: 'string', required: true }
+    id: { type: 'integer', required: true }
   }),
   getUserById
 );
@@ -37,15 +37,15 @@ userRouter.post(
 userRouter.put(
   '/:id', 
   validateRequestBody({
-    username: { type: 'string', required: false },
-    email: { type: 'string', required: false },
+    username: { type: 'integer', required: false },
+    email: { type: 'integer', required: false },
   }), 
   updateUser
 );
 
 userRouter.delete('/:id',
   validateUrlParams({
-    id: { type: 'string', required: true }
+    id: { type: 'integer', required: true }
   }),  
   deleteUser
 );

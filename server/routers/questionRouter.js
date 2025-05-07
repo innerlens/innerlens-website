@@ -4,7 +4,7 @@ import { validateUrlParams } from '../middleware/validateMiddleware.js';
 import { getQuestionById, getAllQuestions } from '../controllers/questionController.js';
 
 export const questionRouter = express.Router();
-questionRouter.use(authMiddleware);
+// questionRouter.use(authMiddleware);
 
 /* Question routes */
 
@@ -12,7 +12,7 @@ questionRouter.get('/', getAllQuestions);
 
 questionRouter.get('/:id', 
   validateUrlParams({
-    id: { type: 'string', required: true }
+    id: { type: 'integer', required: true }
   }),
   getQuestionById
 );

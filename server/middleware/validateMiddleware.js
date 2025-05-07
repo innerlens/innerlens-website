@@ -14,7 +14,7 @@ export function validateRequestBody(schema) {
         if (error) return res.status(HTTP_STATUS.BAD_REQUEST).json({ error });
         next();
     };
-}
+  }
 
 function validateSchema(body, schema) {
     const errors = [];
@@ -28,8 +28,12 @@ function validateSchema(body, schema) {
             continue;
         }
 
-        if (value !== undefined && typeof value !== rule.type) {
-            errors.push(`${key} must be of type ${rule.type}`);
+        if (rule.type === "integer") {
+            if (!parseInt(value)) errors.push(`${key} must be of type integer`);
+        } else if (rule.type === "float") {
+            if (!parseFloat(value)) errors.push(`${key} must be of type float`);
+        } else {
+            if (typeof value !== rule.type) errors.push(`${key} must be of type ${rule.type}`);
         }
     }
 

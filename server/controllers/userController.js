@@ -3,7 +3,7 @@ import { HTTP_STATUS } from '../utils/httpStatus.js';
 
 export async function getUserById(req, res) {
   try {
-    const user = await userRepository.findById(req.params.id);
+    const user = await userRepository.findById(parseInt(req.params.id));
     if (!user) return res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'User not found' });
     res.status(HTTP_STATUS.OK).json(user);
 

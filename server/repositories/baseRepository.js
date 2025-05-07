@@ -18,6 +18,12 @@ export class BaseRepository {
     return result.rows[0] || null;
   }
 
+  async findAllByKey(columnName, value) {
+    const query = `SELECT * FROM ${this.table} WHERE ${columnName} = $1`;
+    const result = await queryDb(query, [value]);
+    return result.rows;
+  }
+
   async findAll() {
     const query = `SELECT * FROM ${this.table}`;
     const result = await queryDb(query);

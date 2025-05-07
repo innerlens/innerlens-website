@@ -44,7 +44,7 @@ export async function getGoogleJwt(req, res) {
       res.status(HTTP_STATUS.OK).json({ jwt });
 
     } catch (err) {
-      console.error(err);
+      console.error('Google Oauth failed:', err);
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: `Google OAuth failed: ${err}` });
     }
 }
