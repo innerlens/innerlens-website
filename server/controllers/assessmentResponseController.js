@@ -43,6 +43,10 @@ export async function createAssessmentResponse(req, res) {
       return res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Question option does not exist' });
     }
 
+    if (await assessmentResponseRepository.findResponseByAssessmentIdAndQuestionId(assessment_id, question_id)) {
+      return res.status(HTTP_STATUS.CONFLICT).json({ error: 'Assessment response already exists for question id' });
+    }
+
     const response = await assessmentResponseRepository.create({ assessment_id, question_id, question_option_id });
     res.status(HTTP_STATUS.CREATED).json(response);
 
