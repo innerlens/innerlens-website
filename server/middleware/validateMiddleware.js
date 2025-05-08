@@ -28,9 +28,18 @@ function validateSchema(body, schema) {
             continue;
         }
 
+        // skip validation if not required
+        if (value === undefined || value === null || value === '') {
+            continue;
+        }
+
         if (rule.type === "integer") {
             if (!/^\d+$/.test(value)) errors.push(`${key} must be of type integer`);
-        } else {
+        } else if (rule.type === "date") {          
+            const date = new Date(value); 
+            if (isNaN(date.getTime())) errors.push(`${key} must be a valid ISO date format`);
+        }
+        else {
             if (typeof value !== rule.type) errors.push(`${key} must be of type ${rule.type}`);
         }
     }
