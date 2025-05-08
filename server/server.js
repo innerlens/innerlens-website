@@ -8,6 +8,8 @@ import { questionOptionRouter } from './routers/questionOptionRouter.js';
 import { dichotomyRouter } from './routers/dichotomyRouter.js';
 import { personalityRouter } from './routers/personalityRouter.js';
 import { traitRouter } from './routers/traitRouter.js';
+import { assessmentRouter } from './routers/assessmentRouter.js';
+import { responseRouter } from './routers/assessmentResponseRouter.js';
 
 const app = express();
 app.use(express.json());
@@ -17,6 +19,8 @@ app.use('/api/user', userRouter);
 app.use('/api/question', questionRouter)
 app.use('/api/option', questionOptionRouter)
 app.use('/api/dichotomy', dichotomyRouter)
+app.use('/api/assessment', assessmentRouter)
+app.use('/api/response', responseRouter)
 app.use('/api/personality', personalityRouter)
 app.use('/api/trait', traitRouter)
 
