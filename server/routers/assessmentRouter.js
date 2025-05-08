@@ -2,7 +2,8 @@ import express from 'express';
 import {
   getAssessmentById,
   createAssessment,
-  completeAssessment
+  completeAssessment,
+  getCurrentUserAssessmentByUserId
 } from '../controllers/assessmentController.js'
 
 import { authMiddleware } from '../middleware/authMiddleware.js';
@@ -18,6 +19,13 @@ assessmentRouter.get('/:id',
     id: { type: 'integer', required: true }
   }),
   getAssessmentById
+);
+
+assessmentRouter.get('/user/:id', 
+  validateUrlParams({
+    id: { type: 'integer', required: true }
+  }),
+  getCurrentUserAssessmentByUserId
 );
 
 assessmentRouter.post(

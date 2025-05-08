@@ -3,9 +3,9 @@ import { HTTP_STATUS } from '../utils/httpStatus.js';
 
 export async function getQuestionOptionById(req, res) {
   try {
-    const question = await questionOptionRepository.findById(parseInt(req.params.id));
-    if (!question) return res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Question option not found' });
-    res.status(HTTP_STATUS.OK).json(question);
+    const option = await questionOptionRepository.findById(parseInt(req.params.id));
+    if (!option) return res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Question option not found' });
+    res.status(HTTP_STATUS.OK).json(option);
 
   } catch (err) {
     console.error('Get question option failed:', err.message);
@@ -15,8 +15,8 @@ export async function getQuestionOptionById(req, res) {
 
 export async function getAllQuestionOptions(req, res) {
   try {
-    const questions = await questionOptionRepository.findAll();
-    res.status(HTTP_STATUS.OK).json(questions);
+    const options = await questionOptionRepository.findAll();
+    res.status(HTTP_STATUS.OK).json(options);
 
   } catch (err) {
     console.error('Get question options failed:', err.message);
@@ -26,8 +26,8 @@ export async function getAllQuestionOptions(req, res) {
 
 export async function getAllQuestionOptionsByQuestionId(req, res) {
   try {
-    const questions = await questionOptionRepository.findAllByKey('question_id', req.params.id);
-    res.status(HTTP_STATUS.OK).json(questions);
+    const options = await questionOptionRepository.findAllByKey('question_id', req.params.id);
+    res.status(HTTP_STATUS.OK).json(options);
 
   } catch (err) {
     console.error('Get question options failed:', err.message);
