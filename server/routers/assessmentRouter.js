@@ -23,12 +23,13 @@ assessmentRouter.get('/:id',
 assessmentRouter.post(
   '/', 
   validateRequestBody({
-    user_id: { type: 'string', required: true }
+    user_id: { type: 'integer', required: true }
   }), 
   createAssessment
 );
 
-assessmentRouter.put(
+// Todo: Remove id from url since it can be retrieved from jwt when auth is added
+assessmentRouter.patch(
   '/:id', 
   validateUrlParams({
     id: { type: 'integer', required: true }

@@ -1,5 +1,7 @@
 import { assessmentRepository } from '../repositories/assessmentRepository.js';
+import { questionRepository } from '../repositories/questionRepository.js';
 import { userRepository } from '../repositories/userRepository.js';
+import { assessmentResponseRepository } from '../repositories/assessmentResponseRepository.js';
 import { HTTP_STATUS } from '../utils/httpStatus.js';
 
 export async function getAssessmentById(req, res) {
@@ -23,11 +25,11 @@ export async function createAssessment(req, res) {
       }
 
       // check for ongoing assessment
-      if (await userRepository.findCurrentAssessmentByUserId(user_id)) {
+      if (await assessmentRepository.findCurrentAssessmentByUserId(user_id)) {
         return res.status(HTTP_STATUS.CONFLICT).json({ error: 'User already has an uncompleted assessment' });
       }
   
-      const user = await userRepository.create({ user_id });
+      const user = await assessmentRepository.create({ user_id });
       res.status(HTTP_STATUS.CREATED).json(user);
 
     } catch (err) {
@@ -38,16 +40,19 @@ export async function createAssessment(req, res) {
 
   export async function completeAssessment(req, res) {
     try {
-      const { assessment_id } = req.params;
-
-      if (!await assessmentRepository.findById(assessment_id)) {
+      const { id } = req.params;
+      
+      if (!await assessmentRepository.findById(id)) {
         return res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Assessment does not exist' });
       }
 
       const { completed_at } = req.body;
 
       // ensure that assessment has all questions answered
-      
+      const responses = await assessmentResponseRepository.findAllByKey('assessment_id', id);
+      const questions = await questionRepository.findAll();
+
+      if (responses.length !== questions.length) return res.status(HTTP_STATUS.FORBIDDEN).json({ error: 'Assessment is incomplete' });
 
       const updatedAssessment = await userRepository.update(id, { completed_at });  
       res.status(HTTP_STATUS.OK).json(updatedAssessment);

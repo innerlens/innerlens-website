@@ -24,7 +24,7 @@ function validateSchema(body, schema) {
         const value = body[key];
 
         if (rule.required && (value === undefined || value === null || value === '')) {
-            errors.push(`${key} is required`);
+            errors.push(`${key} is a required field`);
             continue;
         }
 
@@ -34,13 +34,13 @@ function validateSchema(body, schema) {
         }
 
         if (rule.type === "integer") {
-            if (!/^\d+$/.test(value)) errors.push(`${key} must be of type integer`);
+            if (!/^\d+$/.test(value)) errors.push(`${key} field must be of type integer`);
         } else if (rule.type === "date") {          
             const date = new Date(value); 
-            if (isNaN(date.getTime())) errors.push(`${key} must be a valid ISO date format`);
+            if (isNaN(date.getTime())) errors.push(`${key} field must be a valid ISO date format`);
         }
         else {
-            if (typeof value !== rule.type) errors.push(`${key} must be of type ${rule.type}`);
+            if (typeof value !== rule.type) errors.push(`${key} field must be of type ${rule.type}`);
         }
     }
 

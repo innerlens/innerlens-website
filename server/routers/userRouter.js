@@ -34,7 +34,7 @@ userRouter.post(
   createUser
 );
 
-userRouter.put(
+userRouter.patch(
   '/:id', 
   validateRequestBody({
     username: { type: 'integer', required: false },
