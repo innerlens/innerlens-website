@@ -20,7 +20,7 @@ responseRouter.get('/:id',
   getAssessmentResponseById
 );
 
-responseRouter.get('assessment/:id', 
+responseRouter.get('/assessment/:id', 
     validateUrlParams({
       id: { type: 'integer', required: true }
     }),

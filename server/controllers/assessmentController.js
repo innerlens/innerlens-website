@@ -17,6 +17,17 @@ export async function getAssessmentById(req, res) {
   }
 }
 
+export async function getAssessmentsByUserId(req, res) {
+  try {
+    const assessments = await assessmentRepository.findAllByKey('user_id', parseInt(req.params.id));
+    res.status(HTTP_STATUS.OK).json(assessments);
+
+  } catch (err) {
+    console.error('Get assessments by user failed:', err.message);
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Could not retrieve user\'s assessments', detail: err.message });
+  }
+}
+
 export async function getCurrentUserAssessmentByUserId(req, res) {
   try {
     const assessment = await assessmentRepository.findCurrentAssessmentByUserId(parseInt(req.params.id));
