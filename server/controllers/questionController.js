@@ -1,10 +1,22 @@
 import { questionRepository } from '../repositories/questionRepository.js';
+import { questionOptionRepository } from '../repositories/questionOptionRepository.js';
 import { HTTP_STATUS } from '../utils/httpStatus.js';
 
 export async function getQuestionById(req, res) {
   try {
-    const question = await questionRepository.findById(parseInt(req.params.id));
-    if (!question) return res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Question not found' });
+    const questionId = parseInt(req.params.id);
+    const includeOptions = req.query.includeOptions === 'true';
+
+    const question = await questionRepository.findById(questionId);
+    if (!question) {
+      return res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Question not found' });
+    }
+
+    if (includeOptions) {
+      const options = await questionOptionRepository.findAllByKey('question_id', questionId);
+      question.options = options;
+    }
+
     res.status(HTTP_STATUS.OK).json(question);
 
   } catch (err) {
@@ -15,7 +27,25 @@ export async function getQuestionById(req, res) {
 
 export async function getAllQuestions(req, res) {
   try {
+    const includeOptions = req.query.includeOptions === 'true';
     const questions = await questionRepository.findAll();
+
+    if (includeOptions) {
+      const allOptions = await questionOptionRepository.findAll();
+
+      // group options by question_id
+      const optionsByQuestionId = allOptions.reduce((acc, option) => {
+        if (!acc[option.question_id]) acc[option.question_id] = [];
+        acc[option.question_id].push(option);
+        return acc;
+      }, {});
+
+      // attach options to questions
+      for (const question of questions) {
+        question.options = optionsByQuestionId[question.id] || [];
+      }
+    }
+
     res.status(HTTP_STATUS.OK).json(questions);
 
   } catch (err) {

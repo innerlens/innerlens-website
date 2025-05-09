@@ -16,6 +16,14 @@ export function validateRequestBody(schema) {
     };
   }
 
+export function validateQueryParams(schema) {
+  return (req, res, next) => {
+    const error = validateSchema(req.query || {}, schema);
+    if (error) return res.status(HTTP_STATUS.BAD_REQUEST).json({ error });
+    next();
+  };
+}
+
 function validateSchema(body, schema) {
     const errors = [];
 
