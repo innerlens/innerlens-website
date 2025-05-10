@@ -45,7 +45,7 @@ jobs:
       - name: Capture Terraform Outputs
         id: tf_outputs
         run: |
-          echo "dbhost=$(terraform output -raw DATABASE_HOST)" >> $GITHUB_OUTPUT
+          echo "dbhost=$(terraform output -raw db_host)" >> $GITHUB_OUTPUT
           echo "ec2host=$(terraform output -raw ec2_host)" >> $GITHUB_OUTPUT
 
   build-application:
@@ -112,12 +112,16 @@ jobs:
           
           scp -o StrictHostKeyChecking=no -i innerlens-key.pem innerlens-api.zip "ubuntu@$EC2_HOST:~/innerlens-api.zip"
 
-          ssh -o StrictHostKeyChecking=no -i innerlens-key.pem "ubuntu@$EC2_HOST" '
-            rm -rf ~/innerlens-api &&
-            unzip -o ~/innerlens-api.zip -d ~/innerlens-api &&
-            cd ~/innerlens-api &&
-            npm install &&
-            cat <<EOF > .env
+          ssh -o StrictHostKeyChecking=no -i innerlens-key.pem "ubuntu@$EC2_HOST" << 'EOF'
+            sudo apt update
+            sudo apt install -y unzip
+
+            rm -rf ~/innerlens-api
+            unzip -o ~/innerlens-api.zip -d ~/innerlens-api
+            cd ~/innerlens-api
+            npm install
+
+            cat > .env <<EOL
             GOOGLE_CLIENT_ID=${{ env.GOOGLE_CLIENT_ID }}
             GOOGLE_CLIENT_SECRET=${{ env.GOOGLE_CLIENT_SECRET }}
             GOOGLE_REDIRECT_URI=${{ env.GOOGLE_REDIRECT_URI }}
@@ -126,14 +130,14 @@ jobs:
             DB_NAME=innerlensdb
             DATABASE_USER=${{ env.POSTGRESUSER }}
             DATABASE_PASSWORD=${{ env.POSTGRESPASSWORD }}
-            EOF
+            EOL
 
-            # Restart application using pm2
             if pm2 list | grep -q "innerlens-api"; then
               pm2 delete innerlens-api
             fi
 
-            pm2 start npm --name innerlens-api -- start'
+            pm2 start npm --name innerlens-api -- start
+            EOF
 
   flyway:
     name: Flyway Migrations
