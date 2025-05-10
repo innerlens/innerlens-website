@@ -94,7 +94,7 @@ jobs:
             GOOGLE_REDIRECT_URI, redirecturi
             DATABASE_PORT, dbport
             POSTGRESUSER, postgresuser
-            POSTGRESPASSWORD, postgrespassword
+            POSTGRESPASSWORD, postgrespass
 
       - name: Download Build Artifact
         uses: actions/download-artifact@v4
@@ -156,7 +156,7 @@ jobs:
         with:
           secret-ids: |
             POSTGRESUSER, postgresuser
-            POSTGRESPASSWORD, postgrespassword
+            POSTGRESPASSWORD, postgrespass
 
       - name: Run Flyway Migrations
         run: |
