@@ -94,7 +94,7 @@ jobs:
             GOOGLE_REDIRECT_URI, redirecturi
             DATABASE_PORT, dbport
             DATABASE_HOST, dbhost
-            PGUSER, pguser
+            PGUSER, postgresuser
             PGPASSWORD, pgpassword
 
       - name: Download Build Artifact
@@ -156,7 +156,7 @@ jobs:
         uses: aws-actions/aws-secretsmanager-get-secrets@v2
         with:
           secret-ids: |
-            PGUSER, pguser
+            PGUSER, postgresuser
             PGPASSWORD, pgpassword
 
       - name: Run Flyway Migrations
