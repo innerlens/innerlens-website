@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   getUserById,
+  getUserByGoogleId,
   getAllUsers,
   createUser,
   updateUser,
@@ -11,9 +12,9 @@ import { authMiddleware } from '../middleware/authMiddleware.js';
 import { validateRequestBody, validateUrlParams } from '../middleware/validateMiddleware.js';
 
 export const userRouter = express.Router();
-userRouter.use(authMiddleware);
+// userRouter.use(authMiddleware);
 
-/* User routes (Todo: Remove later, these are just for reference but won't be used by clients) */
+/* User routes */
 
 userRouter.get('/', getAllUsers);
 
@@ -22,6 +23,13 @@ userRouter.get('/:id',
     id: { type: 'integer', required: true }
   }),
   getUserById
+);
+
+userRouter.get('/google/:id', 
+  validateUrlParams({
+    id: { type: 'string', required: true }
+  }),
+  getUserByGoogleId
 );
 
 userRouter.post(

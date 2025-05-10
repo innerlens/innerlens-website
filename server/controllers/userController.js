@@ -13,6 +13,18 @@ export async function getUserById(req, res) {
   }
 }
 
+export async function getUserByGoogleId(req, res) {
+  try {
+    const user = await userRepository.findByKey('google_sub', req.params.id);
+    if (!user) return res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'User not found' });
+    res.status(HTTP_STATUS.OK).json(user);
+
+  } catch (err) {
+    console.error('Get user failed:', err.message);
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Could not retrieve user', detail: err.message });
+  }
+}
+
 export async function createUser(req, res) {
     try {
       const { google_sub, username, email } = req.body;
