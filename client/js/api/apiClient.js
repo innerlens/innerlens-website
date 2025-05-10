@@ -33,21 +33,17 @@ class ApiClient {
    * Sends a POST request to the specified endpoint.
    * @param {string} endpoint - The endpoint to send the request to.
    * @param {object} body - The request body.
-   * @param {boolean} requiresAuth - Optional. Indicates if the request requires authorization. Defaults to true.
    * @returns {Promise<Response>} - The response from the server.
    */
-  static async post(endpoint, body, requiresAuth = true) {
+  static async post(endpoint, body) {
     const headers = {
       "Content-Type": "application/json",
     };
-    if (requiresAuth) {
-      const authHeader = GlobalState.getAuthHeader();
-      Object.assign(headers, authHeader);
-    }
     return await fetch(API_BASE_URL + endpoint, {
       headers,
       method: "POST",
       body: JSON.stringify(body),
+      headers: GlobalState.getAuthHeader(),
     })
       .then((response) => {
         return response;
@@ -61,21 +57,17 @@ class ApiClient {
    * Sends a PUT request to the specified endpoint.
    * @param {string} endpoint - The endpoint to send the request to.
    * @param {object} body - The request body.
-   * @param {boolean} requiresAuth - Optional. Indicates if the request requires authorization. Defaults to true.
    * @returns {Promise<Response>} - The response from the server.
    */
-  static async put(endpoint, body, requiresAuth = true) {
+  static async put(endpoint, body) {
     const headers = {
       "Content-Type": "application/json",
     };
-    if (requiresAuth) {
-      const authHeader = GlobalState.getAuthHeader();
-      Object.assign(headers, authHeader);
-    }
     return await fetch(API_BASE_URL + endpoint, {
       headers,
       method: "PUT",
       body: JSON.stringify(body),
+      headers: GlobalState.getAuthHeader(),
     })
       .then((response) => {
         return response;
@@ -89,22 +81,18 @@ class ApiClient {
    * Sends a PATCH request to the specified endpoint.
    * @param {string} endpoint - The endpoint to send the request to.
    * @param {object} body - The request body.
-   * @param {boolean} requiresAuth - Optional. Indicates if the request requires authorization. Defaults to true.
    * @returns {Promise<Response>} - The response from the server.
    */
-  static async patch(endpoint, body, requiresAuth = true) {
+  static async patch(endpoint, body) {
     const headers = {
       "Content-Type": "application/json",
     };
-    if (requiresAuth) {
-      const authHeader = GlobalState.getAuthHeader();
-      Object.assign(headers, authHeader);
-    }
     return await fetch(API_BASE_URL + endpoint, {
       headers,
       method: "PATCH",
       body: JSON.stringify(body),
-    })
+      headers: GlobalState.getAuthHeader(),
+        })
       .then((response) => {
         return response;
       })
@@ -116,20 +104,16 @@ class ApiClient {
   /**
    * Sends a DELETE request to the specified endpoint.
    * @param {string} endpoint - The endpoint to send the request to.
-   * @param {boolean} requiresAuth - Optional. Indicates if the request requires authorization. Defaults to true.
    * @returns {Promise<Response>} - The response from the server.
    */
-  static async delete(endpoint, requiresAuth = true) {
+  static async delete(endpoint) {
     const headers = {
       "Content-Type": "application/json",
     };
-    if (requiresAuth) {
-      const authHeader = GlobalState.getAuthHeader();
-      Object.assign(headers, authHeader);
-    }
     return await fetch(API_BASE_URL + endpoint, {
       headers,
       method: "DELETE",
+      headers: GlobalState.getAuthHeader(),
     })
       .then((response) => {
         return response;
