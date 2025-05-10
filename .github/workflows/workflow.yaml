@@ -94,7 +94,7 @@ jobs:
             GOOGLE_REDIRECT_URI, redirecturi
             DATABASE_PORT, dbport
             POSTGRESUSER, postgresuser
-            PGPASSWORD, pgpassword
+            POSTGRESPASSWORD, postgrespassword
 
       - name: Download Build Artifact
         uses: actions/download-artifact@v4
@@ -125,7 +125,7 @@ jobs:
             DATABASE_PORT=${{ env.DATABASE_PORT }}
             DB_NAME=innerlensdb
             DATABASE_USER=${{ env.POSTGRESUSER }}
-            DATABASE_PASSWORD=${{ env.PGPASSWORD }}
+            DATABASE_PASSWORD=${{ env.POSTGRESPASSWORD }}
             EOF
 
             # Restart application using pm2
@@ -156,7 +156,7 @@ jobs:
         with:
           secret-ids: |
             POSTGRESUSER, postgresuser
-            PGPASSWORD, pgpassword
+            POSTGRESPASSWORD, postgrespassword
 
       - name: Run Flyway Migrations
         run: |
@@ -165,5 +165,5 @@ jobs:
             redgate/flyway \
             -url="jdbc:postgresql://${{ needs.terraform.outputs.dbhost }}/innerlensdb" \
             -user="${{ env.POSTGRESUSER }}" \
-            -password="${{ env.PGPASSWORD }}" \
+            -password="${{ env.POSTGRESPASSWORD }}" \
             migrate
