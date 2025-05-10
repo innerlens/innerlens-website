@@ -92,7 +92,7 @@ class ApiClient {
       method: "PATCH",
       body: JSON.stringify(body),
       headers: GlobalState.getAuthHeader(),
-        })
+    })
       .then((response) => {
         return response;
       })
