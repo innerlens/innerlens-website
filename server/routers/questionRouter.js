@@ -1,10 +1,19 @@
 import express from 'express'
 import { authMiddleware } from '../middleware/authMiddleware.js';
-import { validateUrlParams, validateQueryParams } from '../middleware/validateMiddleware.js';
-import { getQuestionById, getAllQuestions, getAllQuestionsByDichotomyId } from '../controllers/questionController.js';
+
+import { 
+  validateUrlParams, 
+  validateQueryParams 
+} from '../middleware/validateMiddleware.js';
+
+import { 
+  getQuestionById, 
+  getAllQuestions, 
+  getAllQuestionsByDichotomyId 
+} from '../controllers/questionController.js';
 
 export const questionRouter = express.Router();
-// questionRouter.use(authMiddleware);
+questionRouter.use(authMiddleware);
 
 /* Question routes */
 

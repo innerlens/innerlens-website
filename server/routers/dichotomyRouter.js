@@ -1,10 +1,14 @@
 import express from 'express'
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { validateUrlParams } from '../middleware/validateMiddleware.js';
-import { getDichotomyById, getAllDichotomies } from '../controllers/dichotomyController.js';
+
+import { 
+  getDichotomyById, 
+  getAllDichotomies 
+} from '../controllers/dichotomyController.js';
 
 export const dichotomyRouter = express.Router();
-// dichotomyRouter.use(authMiddleware);
+dichotomyRouter.use(authMiddleware);
 
 /* Dichotomy routes */
 

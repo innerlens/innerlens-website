@@ -44,10 +44,8 @@ function validateSchema(body, schema) {
         if (rule.type === "integer") {
             if (!/^\d+$/.test(value)) errors.push(`${key} field must be of type integer`);
         } else if (rule.type === "date") {          
-            const date = new Date(value); 
-            if (isNaN(date.getTime())) errors.push(`${key} field must be a valid ISO date format`);
-        }
-        else {
+            if (isNaN(Date(value).getTime())) errors.push(`${key} field must be a valid ISO date format`);
+        } else {
             if (typeof value !== rule.type) errors.push(`${key} field must be of type ${rule.type}`);
         }
     }

@@ -1,4 +1,11 @@
 import express from 'express';
+import { authMiddleware } from '../middleware/authMiddleware.js';
+
+import { 
+  validateRequestBody, 
+  validateUrlParams 
+} from '../middleware/validateMiddleware.js';
+
 import {
   getAssessmentById,
   createAssessment,
@@ -7,11 +14,8 @@ import {
   getAssessmentResult
 } from '../controllers/assessmentController.js'
 
-import { authMiddleware } from '../middleware/authMiddleware.js';
-import { validateRequestBody, validateUrlParams } from '../middleware/validateMiddleware.js';
-
 export const assessmentRouter = express.Router();
-// assessmentRouter.use(authMiddleware);
+assessmentRouter.use(authMiddleware);
 
 /* Assessment routes */
 
@@ -44,7 +48,6 @@ assessmentRouter.post(
   createAssessment
 );
 
-// Todo: Remove id from url since it can be retrieved from jwt when auth is added
 assessmentRouter.patch(
   '/:id', 
   validateUrlParams({

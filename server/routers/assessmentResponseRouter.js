@@ -1,15 +1,19 @@
 import express from 'express';
+import { authMiddleware } from '../middleware/authMiddleware.js';
+
+import { 
+  validateRequestBody, 
+  validateUrlParams 
+} from '../middleware/validateMiddleware.js';
+
 import { 
     getAssessmentResponseById,
     createAssessmentResponse,
     getAllAssessmentResponsesByAssessmentyId,
 } from '../controllers/assessmentResponseController.js';
 
-import { authMiddleware } from '../middleware/authMiddleware.js';
-import { validateRequestBody, validateUrlParams } from '../middleware/validateMiddleware.js';
-
 export const responseRouter = express.Router();
-// responseRouter.use(authMiddleware);
+responseRouter.use(authMiddleware);
 
 /* Assessment response routes */
 
