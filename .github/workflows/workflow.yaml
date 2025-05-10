@@ -141,6 +141,9 @@ jobs:
 
   flyway:
     name: Flyway Migrations
+    permissions:
+      id-token: write
+      contents: read
     needs:
       - terraform
       - deploy-api
