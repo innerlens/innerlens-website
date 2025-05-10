@@ -93,8 +93,7 @@ jobs:
             GOOGLE_CLIENT_SECRET, clientsecret
             GOOGLE_REDIRECT_URI, redirecturi
             DATABASE_PORT, dbport
-            DATABASE_HOST, dbhost
-            PGUSER, postgresuser
+            POSTGRESUSER, postgresuser
             PGPASSWORD, pgpassword
 
       - name: Download Build Artifact
@@ -125,7 +124,7 @@ jobs:
             DATABASE_HOST=${{ needs.terraform.outputs.dbhost }}
             DATABASE_PORT=${{ env.DATABASE_PORT }}
             DB_NAME=innerlensdb
-            DATABASE_USER=${{ env.PGUSER }}
+            DATABASE_USER=${{ env.POSTGRESUSER }}
             DATABASE_PASSWORD=${{ env.PGPASSWORD }}
             EOF
 
@@ -156,7 +155,7 @@ jobs:
         uses: aws-actions/aws-secretsmanager-get-secrets@v2
         with:
           secret-ids: |
-            PGUSER, postgresuser
+            POSTGRESUSER, postgresuser
             PGPASSWORD, pgpassword
 
       - name: Run Flyway Migrations
@@ -165,6 +164,6 @@ jobs:
             --volume ${{ github.workspace }}/migrations:/flyway/sql:ro \
             redgate/flyway \
             -url="jdbc:postgresql://${{ needs.terraform.outputs.dbhost }}/innerlensdb" \
-            -user="${{ env.PGUSER }}" \
+            -user="${{ env.POSTGRESUSER }}" \
             -password="${{ env.PGPASSWORD }}" \
             migrate
