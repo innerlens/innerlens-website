@@ -42,8 +42,8 @@ resource "aws_security_group" "allow_postgres" {
   }
 }
 
-data "aws_secretsmanager_secret_version" "pguser" {
-  secret_id = "pguser"
+data "aws_secretsmanager_secret_version" "postgresuser" {
+  secret_id = "postgresuser"
 }
 
 data "aws_secretsmanager_secret_version" "pgpassword" {
@@ -59,7 +59,7 @@ resource "aws_db_instance" "innerlensdb" {
   allocated_storage      = 20
   storage_type           = "gp2"
   publicly_accessible    = true
-  username = data.aws_secretsmanager_secret_version.pguser.secret_string
+  username = data.aws_secretsmanager_secret_version.postgresuser.secret_string
   password = data.aws_secretsmanager_secret_version.pgpassword.secret_string
   skip_final_snapshot    = true
   vpc_security_group_ids = [aws_security_group.allow_postgres.id]
