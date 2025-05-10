@@ -1,21 +1,21 @@
 #test-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
 }
 
 #test-page-heading {
-    font-size: 6rem;
-    font-weight: 500;
-    text-align: center;
+  font-size: 6rem;
+  font-weight: 500;
+  text-align: center;
 }
 
 #question-list {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }

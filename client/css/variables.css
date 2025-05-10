@@ -1,16 +1,16 @@
 :root {
-    --gap-l: 60px;
+  --gap-l: 60px;
 
-    --orange: #C57A48;
-    --purple: #3F22BF;
-    --red: #F26C6C;
-    --text-color: #ECECEC; 
+  --orange: #c57a48;
+  --purple: #3f22bf;
+  --red: #f26c6c;
+  --text-color: #ececec;
 
-    --background-color: #272728;
+  --background-color: #272728;
 }
 
 @media (max-width: 800px) {
-    :root {
-        --gap-l: 30px;
-    }
+  :root {
+    --gap-l: 30px;
+  }
 }

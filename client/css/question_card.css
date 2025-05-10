@@ -1,64 +1,64 @@
 p {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 
 li.question-card {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    max-width: 600px;
-    padding: 20px;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 600px;
+  padding: 20px;
+  text-align: center;
 }
 
 li.question-card .options {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
 
 li.question-card .option {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 li.option {
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    background: transparent;
-    border-radius: 16px;
-    cursor: pointer;
-    z-index: 1;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: transparent;
+  border-radius: 16px;
+  cursor: pointer;
+  z-index: 1;
 }
 
 li.option label.option {
-    padding: 20px;
+  padding: 20px;
 }
 
 li.option::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    padding: 3px;
-    border-radius: 16px;
-    background: linear-gradient(to bottom right, var(--purple), var(--orange));
-    mask: 
-        linear-gradient(#fff 0 0) content-box, 
-        linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    z-index: -1;
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 3px;
+  border-radius: 16px;
+  background: linear-gradient(to bottom right, var(--purple), var(--orange));
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  z-index: -1;
 }
 
 input[type="radio"] {
-    all: unset;
+  all: unset;
 }
 
 li.option:has(input[type="radio"]:checked) {
-    background: linear-gradient(to bottom right, var(--purple), var(--orange));
-  }
-  
+  background: linear-gradient(to bottom right, var(--purple), var(--orange));
+}
+
 label.option {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
