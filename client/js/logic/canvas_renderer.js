@@ -42,9 +42,23 @@ export class CanvasAnimator {
 		requestAnimationFrame(this.animate);
 	}
 
-	addParticle(position, velocity, acceleration, radius, style) {
+	addParticle(
+		position,
+		velocity,
+		acceleration,
+		radius,
+		style,
+		movementConfig = {}
+	) {
 		this.particles.push(
-			new Particle(position, velocity, acceleration, radius, style)
+			new Particle(
+				position,
+				velocity,
+				acceleration,
+				radius,
+				style,
+				movementConfig
+			)
 		);
 	}
 
@@ -67,7 +81,6 @@ export class CanvasAnimator {
 			document.getElementById("background-canvas").style.filter = `blur(${
 				this.ctx.scale / (10.8 * scale)
 			}px)`;
-
 			document.querySelector("header").style.backdropFilter = `blur(${
 				this.ctx.scale / (54 * scale)
 			}px)`;
@@ -76,13 +89,43 @@ export class CanvasAnimator {
 }
 
 class Particle {
-	constructor(position, velocity, acceleration, radius, style) {
-		this.position = position;
+	constructor(
+		position,
+		velocity,
+		acceleration,
+		radius,
+		style,
+		movementConfig = {}
+	) {
+		this.position = { ...position };
+		this.originalPosition = { ...position };
 		this.velocity = velocity;
 		this.acceleration = acceleration;
 		this.radius = radius;
-		this.style = style;
-		this.frictionCoeff = 3;
+		this.style = { ...style };
+
+		this.movementConfig = {
+			maxDistance: movementConfig.maxDistance || 0.03,
+			frequency: movementConfig.frequency || this.randomRange(0.5, 1.5),
+			phaseX: movementConfig.phaseX || Math.random() * Math.PI * 2,
+			phaseY: movementConfig.phaseY || Math.random() * Math.PI * 2,
+			amplitudeRatioX:
+				movementConfig.amplitudeRatioX || this.randomRange(0.7, 1.3),
+			amplitudeRatioY:
+				movementConfig.amplitudeRatioY || this.randomRange(0.7, 1.3),
+			friction: movementConfig.friction || this.randomRange(2.5, 3.5),
+			jitter: movementConfig.jitter || this.randomRange(0, 0.0005),
+			secondaryFrequency:
+				movementConfig.secondaryFrequency || this.randomRange(0.2, 0.5),
+			secondaryAmplitude:
+				movementConfig.secondaryAmplitude || this.randomRange(0.1, 0.3),
+		};
+
+		this.time = Math.random() * 1000;
+	}
+
+	randomRange(min, max) {
+		return Math.random() * (max - min) + min;
 	}
 
 	draw(ctx) {
@@ -99,6 +142,50 @@ class Particle {
 	}
 
 	update(dt) {
+		this.time += dt;
+
+		const {
+			maxDistance,
+			frequency,
+			phaseX,
+			phaseY,
+			amplitudeRatioX,
+			amplitudeRatioY,
+			friction,
+			jitter,
+			secondaryFrequency,
+			secondaryAmplitude,
+		} = this.movementConfig;
+
+		const oscillationX = Math.sin(
+			this.time * frequency * Math.PI * 2 + phaseX
+		);
+		const oscillationY = Math.cos(
+			this.time * frequency * Math.PI * 2 + phaseY
+		);
+
+		const secondaryOscX = Math.sin(
+			this.time * secondaryFrequency * Math.PI * 2 + phaseX * 0.7
+		);
+		const secondaryOscY = Math.cos(
+			this.time * secondaryFrequency * Math.PI * 2 + phaseY * 0.7
+		);
+
+		const targetX =
+			this.originalPosition.x +
+			maxDistance * oscillationX * amplitudeRatioX +
+			maxDistance * secondaryOscX * secondaryAmplitude;
+		const targetY =
+			this.originalPosition.y +
+			maxDistance * oscillationY * amplitudeRatioY +
+			maxDistance * secondaryOscY * secondaryAmplitude;
+
+		const forceX = (targetX - this.position.x) * 2;
+		const forceY = (targetY - this.position.y) * 2;
+
+		this.acceleration.x = forceX + (Math.random() * 2 - 1) * jitter;
+		this.acceleration.y = forceY + (Math.random() * 2 - 1) * jitter;
+
 		this.velocity.x += 0.5 * this.acceleration.x * dt;
 		this.velocity.y += 0.5 * this.acceleration.y * dt;
 
@@ -108,7 +195,7 @@ class Particle {
 		this.velocity.x += 0.5 * this.acceleration.x * dt;
 		this.velocity.y += 0.5 * this.acceleration.y * dt;
 
-		const damping = Math.exp(-this.frictionCoeff * dt);
+		const damping = Math.exp(-friction * dt);
 		this.velocity.x *= damping;
 		this.velocity.y *= damping;
 	}
