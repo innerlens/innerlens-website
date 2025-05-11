@@ -123,20 +123,20 @@ jobs:
             cd ~/innerlens-api/server
             npm install
 
-            cat << EOF > .env
-            GOOGLE_CLIENT_ID=${{ env.GOOGLE_CLIENT_ID }}
-            GOOGLE_CLIENT_SECRET=${{ env.GOOGLE_CLIENT_SECRET }}
-            GOOGLE_REDIRECT_URI=${{ env.GOOGLE_REDIRECT_URI }}
-            DATABASE_HOST=${{ needs.terraform.outputs.dbhost }}
-            DATABASE_PORT=${{ env.DATABASE_PORT }}
-            DB_NAME=${{ env.DATABASE_NAME }}
-            DATABASE_USER=${{ env.POSTGRESUSER }}
-            DATABASE_PASSWORD=${{ env.POSTGRESPASSWORD }}
-            EOF
+            # create .env file
+            echo "GOOGLE_CLIENT_ID=${{ env.GOOGLE_CLIENT_ID }}" > .env
+            echo "GOOGLE_CLIENT_SECRET=${{ env.GOOGLE_CLIENT_SECRET }}" >> .env
+            echo "GOOGLE_REDIRECT_URI=${{ env.GOOGLE_REDIRECT_URI }}" >> .env
+            echo "DATABASE_HOST=${{ needs.terraform.outputs.dbhost }}" >> .env
+            echo "DATABASE_PORT=${{ env.DATABASE_PORT }}" >> .env
+            echo "DB_NAME=${{ env.DATABASE_NAME }}" >> .env
+            echo "DATABASE_USER=${{ env.POSTGRESUSER }}" >> .env
+            echo "DATABASE_PASSWORD=${{ env.POSTGRESPASSWORD }}" >> .env
 
+            # start server
             pm2 stop all
             pm2 start server.js --name innerlens
-            '
+          '
 
   flyway:
     name: Flyway Migrations
