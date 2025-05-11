@@ -121,9 +121,9 @@ jobs:
             rm -rf ~/innerlens-api
             unzip -o ~/innerlens-api.zip -d ~/innerlens-api
             cd ~/innerlens-api/server
-            
-            npm install
-            npm install pm2@latest -g
+
+            sudo npm install
+            sudo npm install pm2@latest -g
 
             # create .env file
             echo "GOOGLE_CLIENT_ID=${{ env.GOOGLE_CLIENT_ID }}" > .env
