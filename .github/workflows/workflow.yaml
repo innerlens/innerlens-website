@@ -123,7 +123,7 @@ jobs:
             cd ~/innerlens-api/server
             npm install
 
-            cat > .env << EOL
+            cat << EOF > .env
             GOOGLE_CLIENT_ID=${{ env.GOOGLE_CLIENT_ID }}
             GOOGLE_CLIENT_SECRET=${{ env.GOOGLE_CLIENT_SECRET }}
             GOOGLE_REDIRECT_URI=${{ env.GOOGLE_REDIRECT_URI }}
@@ -132,7 +132,7 @@ jobs:
             DB_NAME=${{ env.DATABASE_NAME }}
             DATABASE_USER=${{ env.POSTGRESUSER }}
             DATABASE_PASSWORD=${{ env.POSTGRESPASSWORD }}
-            EOL
+            EOF
 
             pm2 stop all
             pm2 start server.js --name innerlens
