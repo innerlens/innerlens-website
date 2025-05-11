@@ -114,7 +114,7 @@ jobs:
           
           scp -o StrictHostKeyChecking=no -i innerlens-key.pem innerlens-api.zip "ubuntu@$EC2_HOST:~/innerlens-api.zip"
 
-          ssh -o StrictHostKeyChecking=no -i innerlens-key.pem "ubuntu@$EC2_HOST" << EOF
+          ssh -o StrictHostKeyChecking=no -i innerlens-key.pem "ubuntu@$EC2_HOST" '
             sudo apt update
             sudo apt install -y unzip
 
@@ -123,7 +123,7 @@ jobs:
             cd ~/innerlens-api/server
             npm install
 
-            cat > .env <<EOL
+            cat > .env << EOL
             GOOGLE_CLIENT_ID=${{ env.GOOGLE_CLIENT_ID }}
             GOOGLE_CLIENT_SECRET=${{ env.GOOGLE_CLIENT_SECRET }}
             GOOGLE_REDIRECT_URI=${{ env.GOOGLE_REDIRECT_URI }}
@@ -136,7 +136,7 @@ jobs:
 
             pm2 stop all
             pm2 start server.js --name innerlens
-            EOF
+            '
 
   flyway:
     name: Flyway Migrations
