@@ -1,0 +1,176 @@
+name: "InnerLens Deployment Pipeline"
+
+on:
+  push:
+    branches:
+      - main
+      - development
+
+jobs:
+  terraform:
+    permissions:
+      id-token: write
+      contents: read
+    name: "Manage AWS Resources"
+    runs-on: ubuntu-latest
+    outputs:
+      dbhost: ${{ steps.tf_outputs.outputs.dbhost }}
+      ec2host: ${{ steps.tf_outputs.outputs.ec2host }}
+    defaults:
+      run:
+        working-directory: terraform
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::229582503298:role/github-oidc
+          aws-region: af-south-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.0.1
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -backend-config="bucket=innerlens-tf-state" -backend-config="key=terraformstate/terraform.tfstate" -backend-config="region=af-south-1"
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+      - name: Capture Terraform Outputs
+        id: tf_outputs
+        run: |
+          echo "dbhost=$(terraform output -raw db_host)" >> $GITHUB_OUTPUT
+          echo "ec2host=$(terraform output -raw ec2_host)" >> $GITHUB_OUTPUT
+
+  build-application:
+    name: Package API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Create Build Artifact
+        run: |
+          mkdir -p build
+          cp -r server/* build/
+          cd build
+          zip -r ../innerlens-api.zip .
+          
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: innerlens-api
+          path: innerlens-api.zip
+
+  deploy-api:
+    name: Deploy API to EC2
+    permissions:
+      id-token: write
+      contents: read
+    needs:
+      - terraform
+      - build-application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::229582503298:role/github-oidc
+          aws-region: af-south-1
+
+      - name: Get Secrets from AWS Secrets Manager
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            EC2_PRIVATE_KEY, innerlens-key
+            GOOGLE_CLIENT_ID, clientid
+            GOOGLE_CLIENT_SECRET, clientsecret
+            GOOGLE_REDIRECT_URI, redirecturi
+            DATABASE_PORT, dbport
+            POSTGRESUSER, postgresuser
+            POSTGRESPASSWORD, postgrespass
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: innerlens-api
+
+      - name: Setup SSH Key
+        run: |
+          echo "${{ env.EC2_PRIVATE_KEY }}" > innerlens-key.pem
+          chmod 400 innerlens-key.pem
+
+      - name: Deploy to EC2
+        run: |
+          EC2_HOST=${{ needs.terraform.outputs.ec2host }}
+          
+          scp -o StrictHostKeyChecking=no -i innerlens-key.pem innerlens-api.zip "ubuntu@$EC2_HOST:~/innerlens-api.zip"
+
+          ssh -o StrictHostKeyChecking=no -i innerlens-key.pem "ubuntu@$EC2_HOST" << 'EOF'
+            sudo apt update
+            sudo apt install -y unzip
+
+            rm -rf ~/innerlens-api
+            unzip -o ~/innerlens-api.zip -d ~/innerlens-api
+            cd ~/innerlens-api
+            npm install
+
+            cat > .env <<EOL
+            GOOGLE_CLIENT_ID=${{ env.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ env.GOOGLE_CLIENT_SECRET }}
+            GOOGLE_REDIRECT_URI=${{ env.GOOGLE_REDIRECT_URI }}
+            DATABASE_HOST=${{ needs.terraform.outputs.dbhost }}
+            DATABASE_PORT=${{ env.DATABASE_PORT }}
+            DB_NAME=innerlensdb
+            DATABASE_USER=${{ env.POSTGRESUSER }}
+            DATABASE_PASSWORD=${{ env.POSTGRESPASSWORD }}
+            EOL
+
+            if pm2 list | grep -q "innerlens-api"; then
+              pm2 delete innerlens-api
+            fi
+
+            pm2 start npm --name innerlens-api -- start
+            EOF
+
+  flyway:
+    name: Flyway Migrations
+    permissions:
+      id-token: write
+      contents: read
+    needs:
+      - terraform
+      - deploy-api
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::229582503298:role/github-oidc
+          aws-region: af-south-1
+
+      - name: Get Secrets
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            POSTGRESUSER, postgresuser
+            POSTGRESPASSWORD, postgrespass
+
+      - name: Run Flyway Migrations
+        run: |
+          docker run --rm \
+            --volume ${{ github.workspace }}/migrations:/flyway/sql:ro \
+            redgate/flyway \
+            -url="jdbc:postgresql://${{ needs.terraform.outputs.dbhost }}/innerlensdb" \
+            -user="${{ env.POSTGRESUSER }}" \
+            -password="${{ env.POSTGRESPASSWORD }}" \
+            migrate

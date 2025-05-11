@@ -1,27 +1,42 @@
-const express = require('express');
-const path = require('path');
+import "dotenv/config";
+import path from "path";
+import { fileURLToPath } from "url";
+import express from "express";
+import { authRouter } from "./routers/authRouter.js";
+import { userRouter } from "./routers/userRouter.js";
+import { questionRouter } from "./routers/questionRouter.js";
+import { questionOptionRouter } from "./routers/questionOptionRouter.js";
+import { dichotomyRouter } from "./routers/dichotomyRouter.js";
+import { personalityRouter } from "./routers/personalityRouter.js";
+import { traitRouter } from "./routers/traitRouter.js";
+import { assessmentRouter } from "./routers/assessmentRouter.js";
+import { responseRouter } from "./routers/assessmentResponseRouter.js";
+
 const app = express();
-const apiController = require('./controllers/api_controller');
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const clientBuildPath = path.join(__dirname, "../client");
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../client')));
 
-app.use('/api', apiController);
-
-app.get('/{*any}', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/index.html'));
-});
-
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    error: 'Something went wrong!',
-    message: process.env.NODE_ENV === 'development' ? err.message : undefined
-  });
-});
+app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
+app.use("/api/question", questionRouter);
+app.use("/api/option", questionOptionRouter);
+app.use("/api/dichotomy", dichotomyRouter);
+app.use("/api/assessment", assessmentRouter);
+app.use("/api/response", responseRouter);
+app.use("/api/personality", personalityRouter);
+app.use("/api/trait", traitRouter);
 
 const PORT = process.env.PORT || 3000;
+
+app.use(express.static(clientBuildPath));
+app.get("*frontend", (req, res) => {
+  res.sendFile(path.join(clientBuildPath, "index.html"));
+});
+
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });

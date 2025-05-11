@@ -1,1 +1,13 @@
-/node_modules
+# Node dependencies
+node_modules/
+
+# Env variables
+.env
+
+# Editor junk
+.vscode/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
