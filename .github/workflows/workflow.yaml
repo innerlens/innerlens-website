@@ -58,7 +58,8 @@ jobs:
       - name: Create Build Artifact
         run: |
           mkdir -p build
-          cp -r server/* build/
+          cp -r server/ build/
+          cp -r client/ build/
           cd build
           zip -r ../innerlens-api.zip .
           
@@ -93,6 +94,7 @@ jobs:
             GOOGLE_CLIENT_SECRET, clientsecret
             GOOGLE_REDIRECT_URI, redirecturi
             DATABASE_PORT, dbport
+            DATABASE_NAME, dbname
             POSTGRESUSER, postgresuser
             POSTGRESPASSWORD, postgrespass
 
@@ -118,7 +120,7 @@ jobs:
 
             rm -rf ~/innerlens-api
             unzip -o ~/innerlens-api.zip -d ~/innerlens-api
-            cd ~/innerlens-api
+            cd ~/innerlens-api/server
             npm install
 
             cat > .env <<EOL
@@ -127,16 +129,13 @@ jobs:
             GOOGLE_REDIRECT_URI=${{ env.GOOGLE_REDIRECT_URI }}
             DATABASE_HOST=${{ needs.terraform.outputs.dbhost }}
             DATABASE_PORT=${{ env.DATABASE_PORT }}
-            DB_NAME=innerlensdb
+            DB_NAME=${{ env.DATABASE_NAME }}
             DATABASE_USER=${{ env.POSTGRESUSER }}
             DATABASE_PASSWORD=${{ env.POSTGRESPASSWORD }}
             EOL
 
-            if pm2 list | grep -q "innerlens-api"; then
-              pm2 delete innerlens-api
-            fi
-
-            pm2 start npm --name innerlens-api -- start
+            pm2 stop all
+            pm2 start server.js --name innerlens
             EOF
 
   flyway:
@@ -162,6 +161,7 @@ jobs:
         uses: aws-actions/aws-secretsmanager-get-secrets@v2
         with:
           secret-ids: |
+            DATABASE_NAME, dbname
             POSTGRESUSER, postgresuser
             POSTGRESPASSWORD, postgrespass
 
@@ -170,7 +170,7 @@ jobs:
           docker run --rm \
             --volume ${{ github.workspace }}/migrations:/flyway/sql:ro \
             redgate/flyway \
-            -url="jdbc:postgresql://${{ needs.terraform.outputs.dbhost }}/innerlensdb" \
+            -url="jdbc:postgresql://${{ needs.terraform.outputs.dbhost }}/${{ env.DATABASE_NAME }}" \
             -user="${{ env.POSTGRESUSER }}" \
             -password="${{ env.POSTGRESPASSWORD }}" \
             migrate

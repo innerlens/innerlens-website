@@ -1,3 +1,4 @@
+## terraform config
 terraform {
   required_providers {
     aws = {
@@ -15,6 +16,7 @@ provider "aws" {
   region =  "af-south-1"
 }
 
+# network resources
 resource "aws_default_vpc" "default_vpc" {
   tags = {
     Name = "default_vpc"
@@ -31,6 +33,7 @@ resource "aws_default_subnet" "subnet_az2" {
   availability_zone = data.aws_availability_zones.available_zones.names[1]
 }
 
+# pgdb security group
 resource "aws_security_group" "allow_postgres" {
   name_prefix = "allow_postgres_"
 
@@ -42,6 +45,7 @@ resource "aws_security_group" "allow_postgres" {
   }
 }
 
+# pgdb secrets from aws secrets manager
 data "aws_secretsmanager_secret_version" "postgresuser" {
   secret_id = "postgresuser"
 }
@@ -73,27 +77,31 @@ output "db_host" {
   description = "The endpoint of the Postgres Server RDS instance"
 }
 
+## ec2 security group and instance
 resource "aws_security_group" "ec2_security_group" {
   name_prefix = "innerlens_api_sg"
-
+  # ssh
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  # http
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  # https
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  # outbound traffic
   egress {
     from_port   = 0
     to_port     = 0
@@ -113,6 +121,7 @@ resource "aws_instance" "innerlens_ec2_instance" {
   vpc_security_group_ids = [ aws_security_group.ec2_security_group.id ]
 }
 
+# static ip
 resource "aws_eip" "innerlens_ec2_eip" {
   instance = aws_instance.innerlens_ec2_instance.id
   domain   = "vpc"
