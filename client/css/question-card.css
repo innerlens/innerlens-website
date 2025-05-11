@@ -5,9 +5,9 @@ p {
 li.question-card {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--gap-s);
     max-width: 600px;
-    padding: 20px;
+    padding: var(--gap-s);
     text-align: center;
 }
 
@@ -28,21 +28,21 @@ li.option {
     align-items: center;
     position: relative;
     background: transparent;
-    border-radius: 16px;
+    border-radius: var(--border-radius);
     cursor: pointer;
     z-index: 1;
 }
 
 li.option label.option {
-    padding: 20px;
+    padding: var(--gap-s);
 }
 
 li.option::before {
     content: "";
     position: absolute;
     inset: 0;
-    padding: 3px;
-    border-radius: 16px;
+    padding: round(up, var(--border-width), 1px);
+    border-radius: var(--border-radius);
     background: linear-gradient(to bottom right, var(--purple), var(--orange));
     mask: 
         linear-gradient(#fff 0 0) content-box, 

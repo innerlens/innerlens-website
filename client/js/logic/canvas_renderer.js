@@ -50,8 +50,7 @@ export class CanvasAnimator {
 
     resizeCanvasToDisplaySize() {
         const rect = this.canvas.getBoundingClientRect();
-        // const scale = window.devicePixelRatio || 1;
-        const scale = 1;
+        const scale = window.devicePixelRatio || 1;
     
         const width = rect.width * scale;
         const height = rect.height * scale;

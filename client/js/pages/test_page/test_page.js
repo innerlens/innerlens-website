@@ -1,4 +1,4 @@
-import { QuestionCard } from "../components/question_card.js";
+import { QuestionCard } from "../../components/question_card.js";
 
 export const TestPage = {
     questions: [],
@@ -10,6 +10,7 @@ export const TestPage = {
     },
 
     async render() {
+        console.log('rendering tests');
         await this.loadQuestions();
 
         const questionListId = "question-list";
@@ -23,6 +24,7 @@ export const TestPage = {
         `;
 
         const parent = document.querySelector('main');
+        parent.innerHTML = '';
         parent.appendChild(testPage);
 
         this.cards = this.questions.map((data, index) => {

@@ -1,25 +1,18 @@
+import { Navigation } from "./navigation.js";
+
 export const HeaderContent = {
     heading: "innerlens",
-    navLinks: [
-        {href: '#home', text: "Home"},
-        {href: '#my-personality', text: "My Personality"},
-        {href: '#personality-types', text: "Personality Types"}
-    ],
 
     render() {
-        const navHtml = this.navLinks.map(link => `
-            <li class="nav-item">
-                <a class="nav-link" href="${link.href}">${link.text}</a>
-            </li>
-        `).join('');
 
-        const htmlContent = `
-            <h1 id="title">${this.heading}</h1>
-            <nav id="header-nav">
-                <ul id="header-ul">${navHtml}</ul>
-            </nav>
-        `;
+        const title = document.createElement('h1');
+        title.id = "title";
 
-        document.querySelector('header').innerHTML = htmlContent;
+        title.innerText = this.heading
+
+        const parent = document.querySelector('header');
+        parent.appendChild(title);
+
+        Navigation.render();
     }
 }
