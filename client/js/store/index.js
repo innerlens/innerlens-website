@@ -17,6 +17,10 @@ export class GlobalState {
     return userToken;
   }
 
+  static setUserToken(token) {
+    localStorage.setItem("userToken", token);
+  }
+
   static logout() {
     localStorage.removeItem("userToken");
     GLOBAL_STORE.userToken = null;
