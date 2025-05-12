@@ -1,6 +1,5 @@
 import { GlobalState } from "../store";
-
-const API_BASE_URL = "http://localhost:3000";
+import { API_BASE_URL } from "../utils/constants.js";
 
 class ApiClient {
   /**

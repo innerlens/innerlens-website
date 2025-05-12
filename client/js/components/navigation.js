@@ -7,7 +7,7 @@ export const Navigation = {
 		{ href: "personality-types", text: "Personality Types" },
 	],
 
-	buttons: [{ class: "secondary-button", text: "Sign In" }],
+	buttons: [{ class: "secondary-button", id: "google-signin", text: "Sign In" }],
 
 	render() {
 		const navHtml = this.navLinks
@@ -24,7 +24,7 @@ export const Navigation = {
 			.map(
 				(button) => `
             <li class="nav-item">
-                <button class="${button.class}">${button.text}</button>
+          		<button class="${button.class}" id="${button.id}">${button.text}</button>
             </li>
         `
 			)

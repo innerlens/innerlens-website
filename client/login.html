@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personality Test</title>
+  </head>
+  <body>
+    <script type="module">
+        import { API_BASE_URL } from "./js/utils/constants.js";
+        import { GlobalState } from "./js/store/index.js"
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get("code");
+
+        const response = await fetch(`${API_BASE_URL}/api/auth/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code }),
+        });
+
+        const data = await response.json();
+
+        if (data.jwt) {
+          GlobalState.setUserToken(data.jwt);
+        }
+
+        window.location.href = `${API_BASE_URL}/`;
+
+    </script>
+  </body>
+</html>
