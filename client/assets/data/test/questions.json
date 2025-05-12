@@ -1,58 +1,46 @@
 [
-  {
-    "question": "In a social gathering, do you feel more energized by interacting with a large group of people or by having one-on-one conversations?",
-    "options": ["Large group interactions", "One-on-one conversations"]
-  },
-  {
-    "question": "How do you typically recharge after a busy day?",
-    "options": [
-      "Spending time with friends or engaging in social activities",
-      "Having some alone time to relax and unwind"
-    ]
-  },
-  {
-    "question": "When facing a challenge, do you prefer brainstorming ideas with others or working through it independently?",
-    "options": ["Brainstorming with others", "Working through it independently"]
-  },
-  {
-    "question": "In your free time, do you find yourself seeking out social events and gatherings or enjoying quieter activities at home?",
-    "options": ["Social events and gatherings", "Quieter activities at home"]
-  },
-  {
-    "question": "How do you feel about small talk?",
-    "options": [
-      "Enjoy it and find it easy to engage in",
-      "Find it somewhat awkward or draining"
-    ]
-  },
-  {
-    "question": "When making decisions, do you rely more on your own instincts and feelings or seek input from others?",
-    "options": ["Rely on own instincts and feelings", "Seek input from others"]
-  },
-  {
-    "question": "How do you handle new and unfamiliar situations?",
-    "options": ["Embrace them with enthusiasm", "Approach them with caution"]
-  },
-  {
-    "question": "In a work or team setting, do you prefer open office spaces and collaboration or individual workspaces?",
-    "options": ["Open office spaces and collaboration", "Individual workspaces"]
-  },
-  {
-    "question": "How do you typically respond to being the focal point in a group setting?",
-    "options": [
-      "Embrace it and feel at ease",
-      "Prefer to avoid being the center of attention"
-    ]
-  },
-  {
-    "question": "When planning a weekend, do you lean towards social plans with friends or quiet time for yourself?",
-    "options": ["Social plans with friends", "Quiet time for yourself"]
-  },
-  {
-    "question": "When meeting new people, are you more likely to initiate conversations and introductions or wait for others to approach you?",
-    "options": [
-      "Initiate conversations and introductions",
-      "Wait for others to approach you"
-    ]
-  }
+    {
+        "question": "In a social gathering, do you feel more energized by interacting with a large group of people or by having one-on-one conversations?",
+        "options": ["Large group interactions", "One-on-one conversations"]
+    },
+    {
+        "question": "How do you typically recharge after a busy day?",
+        "options": ["Spending time with friends or engaging in social activities", "Having some alone time to relax and unwind"]
+    },
+    {
+        "question": "When facing a challenge, do you prefer brainstorming ideas with others or working through it independently?",
+        "options": ["Brainstorming with others", "Working through it independently"]
+    },
+    {
+        "question": "In your free time, do you find yourself seeking out social events and gatherings or enjoying quieter activities at home?",
+        "options": ["Social events and gatherings", "Quieter activities at home"]
+    },
+    {
+        "question": "How do you feel about small talk?",
+        "options": ["Enjoy it and find it easy to engage in", "Find it somewhat awkward or draining"]
+    },
+    {
+        "question": "When making decisions, do you rely more on your own instincts and feelings or seek input from others?",
+        "options": ["Rely on own instincts and feelings", "Seek input from others"]
+    },
+    {
+        "question": "How do you handle new and unfamiliar situations?",
+        "options": ["Embrace them with enthusiasm", "Approach them with caution"]
+    },
+    {
+        "question": "In a work or team setting, do you prefer open office spaces and collaboration or individual workspaces?",
+        "options": ["Open office spaces and collaboration", "Individual workspaces"]
+    },
+    {
+        "question": "How do you typically respond to being the focal point in a group setting?",
+        "options": ["Embrace it and feel at ease", "Prefer to avoid being the center of attention"]
+    },
+    {
+        "question": "When planning a weekend, do you lean towards social plans with friends or quiet time for yourself?",
+        "options": ["Social plans with friends", "Quiet time for yourself"]
+    },
+    {
+        "question": "When meeting new people, are you more likely to initiate conversations and introductions or wait for others to approach you?",
+        "options": ["Initiate conversations and introductions", "Wait for others to approach you"]
+    }
 ]
