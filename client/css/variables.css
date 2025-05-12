@@ -1,16 +1,20 @@
 :root {
-  --gap-l: 60px;
+    --gap-l: 6vmin;
+    --gap-m: 4vmin;
+    --gap-s: 2vmin;
+    --gap-xs: 1vmin;
 
-  --orange: #c57a48;
-  --purple: #3f22bf;
-  --red: #f26c6c;
-  --text-color: #ececec;
+    --orange: #C57A48;
+    --purple: #3F22BF;
+    --red: #F26C6C;
+    --text-color: #ECECEC; 
 
-  --background-color: #272728;
-}
+    --background-color: #272728;
 
-@media (max-width: 800px) {
-  :root {
-    --gap-l: 30px;
-  }
+    --border-radius: 1.5vmin;
+    --border-width: 0.4vmin;
+
+    --font-rem: calc(1.5vmin * 1);
+
+    --header-height: 17vmin;
 }
