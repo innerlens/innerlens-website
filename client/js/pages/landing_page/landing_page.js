@@ -1,5 +1,6 @@
 import { HomeSection } from "./sections/home_section.js";
 import { MyPersonalitySection } from "./sections/my_personality_section.js";
+import { PersonalityTypesSection } from "./sections/personality_types_section.js";
 
 export const LandingPage = {
 	render() {
@@ -12,5 +13,6 @@ export const LandingPage = {
 
 		HomeSection.render();
 		MyPersonalitySection.render();
+		PersonalityTypesSection.render();
 	},
 };
