@@ -1,16 +1,54 @@
-import { ScrollHandler } from "../logic/scroll_handler.js";
+import SessionManager from "../logic/session_manager.js";
 
 export const Navigation = {
 	navLinks: [
-		{ href: "home", text: "Home" },
-		{ href: "my-personality", text: "My Personality" },
-		{ href: "personality-types", text: "Personality Types" },
+		{
+			href: "home",
+			text: "Home",
+			states: ["landing signed out", "landing signed in", "test"],
+		},
+		{
+			href: "my-personality",
+			text: "My Personality",
+			states: ["landing signed out", "landing signed in"],
+		},
+		{
+			href: "personality-types",
+			text: "Personality Types",
+			states: ["landing signed out", "landing signed in"],
+		},
 	],
 
-	buttons: [{ class: "secondary-button", id: "google-signin", text: "Sign In" }],
+	buttons: [
+		{
+			id: "sign-in-button",
+			class: "secondary-button",
+			onClick: SessionManager.signIn,
+			text: "Sign In",
+			states: ["landing signed out"],
+		},
+		{
+			id: "sign-out-button",
+			class: "secondary-button",
+			onClick: SessionManager.signOut,
+			text: "Sign Out",
+			states: ["landing signed in"],
+		},
+	],
 
-	render() {
+	render(page) {
+		document.getElementById("header-nav")?.remove();
+
+		let state = page;
+
+		if (page === "landing") {
+			state += SessionManager.isUserSignedIn
+				? " signed in"
+				: " signed out";
+		}
+
 		const navHtml = this.navLinks
+			.filter((link) => link.states.includes(state))
 			.map(
 				(link) => `
             <li class="nav-item">
@@ -21,10 +59,11 @@ export const Navigation = {
 			.join("");
 
 		const buttonHtml = this.buttons
+			.filter((button) => button.states.includes(state))
 			.map(
 				(button) => `
             <li class="nav-item">
-          		<button class="${button.class}" id="${button.id}">${button.text}</button>
+                <button class="${button.class}" id="${button.id}">${button.text}</button>
             </li>
         `
 			)
@@ -43,6 +82,9 @@ export const Navigation = {
 		const parent = document.querySelector("header");
 		parent.appendChild(nav);
 
-		ScrollHandler.addHighlighting();
+		this.buttons.forEach((button) => {
+			const btnElem = document.getElementById(button.id);
+			if (btnElem) btnElem.addEventListener("click", button.onClick);
+		});
 	},
 };

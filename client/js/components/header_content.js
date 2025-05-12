@@ -1,18 +1,17 @@
 import { Navigation } from "./navigation.js";
 
 export const HeaderContent = {
-    heading: "innerlens",
+	heading: "innerlens",
 
-    render() {
+	render() {
+		const title = document.createElement("h1");
+		title.id = "title";
 
-        const title = document.createElement('h1');
-        title.id = "title";
+		title.innerText = this.heading;
 
-        title.innerText = this.heading
+		const parent = document.querySelector("header");
+		parent.appendChild(title);
 
-        const parent = document.querySelector('header');
-        parent.appendChild(title);
-
-        Navigation.render();
-    }
-}
+		Navigation.render("landing");
+	},
+};

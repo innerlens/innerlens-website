@@ -2,7 +2,7 @@ import { HeaderContent } from "./components/header_content.js";
 import { LandingPage } from "./pages/landing_page/landing_page.js";
 import { Canvas } from "./components/canvas.js";
 import { CanvasAnimator } from "./logic/canvas_renderer.js";
-import { loadGoogleLoginPage } from "./logic/login_handler.js";
+import { ScrollHandler } from "./logic/scroll_handler.js";
 
 const backgroundCanvas = new Canvas("background-canvas");
 backgroundCanvas.render(document.body);
@@ -12,9 +12,8 @@ createStructure();
 LandingPage.render();
 HeaderContent.render();
 
-loadGoogleLoginPage();
-
 createBackground();
+ScrollHandler.addHighlighting();
 
 function createStructure() {
 	document.body.appendChild(document.createElement("header"));

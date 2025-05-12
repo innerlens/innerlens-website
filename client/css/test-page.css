@@ -5,6 +5,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--gap-m);
+    padding-bottom: var(--gap-l);
 }
 
 #test-page-heading {
@@ -19,4 +20,14 @@
     justify-content: center;
     align-items: center;
     gap: var(--gap-s);
+}
+
+#progress-bar {
+    position: sticky;
+    top: var(--header-height);
+    max-width: 600px;
+    height: 50px;
+    backdrop-filter: blur(20px);
+    border-radius: var(--border-radius);
+    border: var(--border-width) solid var(--text-color)
 }

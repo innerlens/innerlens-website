@@ -20,9 +20,10 @@ export const ScrollHandler = {
 		});
 
 		this.navLi.forEach((li) => {
-			li.classList.remove("active");
 			if (li.classList.contains(current)) {
 				li.classList.add("active");
+			} else {
+				li.classList.remove("active");
 			}
 		});
 	},

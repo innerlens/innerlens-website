@@ -29,7 +29,8 @@ export class CanvasAnimator {
 	animate(currentTime) {
 		if (!this.running) return;
 
-		const dt = (currentTime - this.lastTime) / 1000;
+		let dt = (currentTime - this.lastTime) / 1000;
+		dt = Math.min(dt, 1);
 		this.lastTime = currentTime;
 
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
