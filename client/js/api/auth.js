@@ -1,8 +1,8 @@
 import { GlobalState } from "../store";
 
 class AuthService {
-  clientId = "346787702480-6scg2plhkh4br3j3ns3jg0e333ekdlqi.apps.googleusercontent.com";
-  redirectUri = "http://localhost:8000/google";
+  clientId = process.env.GOOGLE_CLIENT_ID;
+  redirectUri = process.env.GOOGLE_REDIRECT_URI;
   scope = "openid email profile";
 
   userToken = GlobalState.getUserToken();
