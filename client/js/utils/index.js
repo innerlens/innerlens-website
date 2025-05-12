@@ -1,4 +1,4 @@
-import AuthService from "../logic/auth_service";
+import AuthService from "../logic/auth_service.js";
 
 export function withAuthorisationCheck(methodName, ...args) {
 	const authToken = AuthService.getAuthHeader()["Authorization"];

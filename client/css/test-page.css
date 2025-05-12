@@ -25,9 +25,11 @@
 #progress-bar {
     position: sticky;
     top: var(--header-height);
+    width: 100%;
     max-width: 600px;
     height: 50px;
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(10px);
     border-radius: var(--border-radius);
-    border: var(--border-width) solid var(--text-color)
+    border: var(--border-width) solid var(--text-color);
+    z-index: 10;
 }

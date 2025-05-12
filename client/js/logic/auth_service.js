@@ -18,8 +18,8 @@ class AuthService {
 
 	static logout() {
 		localStorage.removeItem("userToken");
-		window.location.href = "/#home";
 		window.location.reload();
+		window.location.href = "/#home";
 	}
 
 	static getGoogleSub() {

@@ -1,5 +1,8 @@
-import ApiClient from "./apiClient";
-import { applyAuthChecktOMethods } from "../utils";
+import ApiClient from "./api_client.js";
+import {
+	applyAuthChecktOMethods,
+	withAuthorisationCheck,
+} from "../utils/index.js";
 
 // Assessment API - Handles all assessment-related endpoints
 class AssessmentApi {
@@ -33,9 +36,7 @@ class AssessmentApi {
 // Question API - Handles questions and answers
 class QuestionApi {
 	static async getQuestionsWithOptions() {
-		return (
-			await ApiClient.get("/api/question?includeOptions=true")
-		).json();
+		return await ApiClient.get("/api/question?includeOptions=true");
 	}
 
 	static async submitAnswer(assessmentId, questionId, questionOptionId) {

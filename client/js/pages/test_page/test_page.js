@@ -1,12 +1,13 @@
 import { QuestionCard } from "../../components/question_card.js";
+import { QuestionApi } from "../../api/assessments.js";
 
 export const TestPage = {
 	questions: [],
 	cards: [],
 
 	async loadQuestions() {
-		const res = await fetch("../../assets/data/test/questions.json");
-		this.questions = await res.json();
+		const questions = await QuestionApi.getQuestionsWithOptions();
+		this.questions = questions;
 	},
 
 	async render() {
@@ -20,7 +21,6 @@ export const TestPage = {
 
 		testPage.innerHTML = `
             <h1 id="test-page-heading">Personality Test</h1>
-            <span id="progress-bar"></span>
             <ul id="${questionListId}"></ul>
             <button class="primary-button">Next</button>
         `;
@@ -32,7 +32,7 @@ export const TestPage = {
 		this.cards = this.questions.map((data, index) => {
 			const card = new QuestionCard(
 				index,
-				data.question,
+				data.prompt,
 				data.options,
 				this.handleSelect.bind(this)
 			);
