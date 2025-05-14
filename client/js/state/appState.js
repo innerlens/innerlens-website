@@ -11,10 +11,6 @@ class AppState {
 			testStatus: TestStatus.NOT_STARTED,
 		};
 		this.listeners = [];
-
-		setTimeout(() => {
-			this.signIn("Greg");
-		}, 3000);
 	}
 
 	getState() {

@@ -1,6 +1,7 @@
 import Page from "./enums/page.js";
 import landingPage from "./pages/landingPage.js";
 import appState from "./state/appState.js";
+import PATH from "./enums/path.js";
 
 class Router {
 	constructor() {
@@ -15,6 +16,14 @@ class Router {
 			this._redirect(Page.TEST);
 		} else {
 			this._redirect("");
+		}
+	}
+
+	gotoSignIn() {
+		const state = appState.getState();
+
+		if (!state.isUserSignedIn) {
+			window.location.href = PATH.AUTH_URI;
 		}
 	}
 
@@ -37,7 +46,7 @@ class Router {
 				landingPage.render();
 				break;
 			case Page.TEST:
-				testPage.render();
+			// testPage.render();
 			default:
 				console.log("womp womp");
 		}
@@ -51,4 +60,5 @@ class Router {
 	}
 }
 
-export default new Router();
+const router = new Router();
+export default router;

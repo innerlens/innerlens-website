@@ -48,7 +48,8 @@ export function getButtonById(id) {
 		"sign-in-button": {
 			class: "secondary-button",
 			text: "Sign In",
-			onClick: () => console.log("Sign In"),
+			onClick: () =>
+				import("../router.js").then((mod) => mod.default.gotoSignIn()),
 		},
 		"sign-out-button": {
 			class: "secondary-button",

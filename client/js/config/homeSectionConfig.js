@@ -1,16 +1,17 @@
 import AppEvent from "../enums/appEvent.js";
-import router from "../router.js";
 
 export const HomeSectionButtons = {
 	signedIn: {
 		class: "primary-button",
 		text: "Start Personality Test",
-		onClick: () => router.gotoTest(),
+		onClick: () =>
+			import("../router.js").then((mod) => mod.default.gotoTest()),
 	},
 	signedOut: {
 		class: "primary-button",
 		text: "Sign In to Take Test",
-		onClick: () => console.log("Start Personality Test"),
+		onClick: () =>
+			import("../router.js").then((mod) => mod.default.gotoSignIn()),
 	},
 };
 
