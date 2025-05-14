@@ -22,11 +22,20 @@ class AuthService {
 		window.location.href = "/#home";
 	}
 
-	static getGoogleSub() {
+	static getDecodedPayload() {
 		if (!this.getUserToken()) return null;
 		const base64Payload = this.getUserToken().split(".")[1];
-		const decodedPayload = JSON.parse(atob(base64Payload));
-		return decodedPayload.sub;
+		return JSON.parse(atob(base64Payload));
+	}
+
+	static getGoogleSub() {
+		const decodedPayload = AuthService.getDecodedPayload();
+		return decodedPayload?.sub || null;
+	}
+
+	static getUsername() {
+		const decodedPayload = AuthService.getDecodedPayload();
+		return decodedPayload?.name || null;
 	}
 
 	static withAuthorisationCheck(methodName, ...args) {

@@ -36,8 +36,6 @@ class Router {
 
 		if (!isValidPage || isRestricted) {
 			this._redirect("");
-			appState.setPage(Page.LANDING);
-
 			return;
 		}
 
@@ -46,7 +44,8 @@ class Router {
 				landingPage.render();
 				break;
 			case Page.TEST:
-			// testPage.render();
+				// testPage.render();
+				break;
 			default:
 				console.log("womp womp");
 		}
