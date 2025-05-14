@@ -1,8 +1,5 @@
 import ApiClient from "./api_client.js";
-import {
-	applyAuthChecktOMethods,
-	withAuthorisationCheck,
-} from "../utils/index.js";
+import AuthService from "../logic/auth_service.js";
 
 // Assessment API - Handles all assessment-related endpoints
 class AssessmentApi {
@@ -192,8 +189,8 @@ class AssessmentFlow {
 	}
 }
 
-applyAuthChecktOMethods(AssessmentApi, withAuthorisationCheck);
-applyAuthChecktOMethods(AssessmentFlow, withAuthorisationCheck);
-applyAuthChecktOMethods(QuestionApi, withAuthorisationCheck);
+AuthService.applyAuthChecktOMethods(AssessmentApi);
+AuthService.applyAuthChecktOMethods(AssessmentFlow);
+AuthService.applyAuthChecktOMethods(QuestionApi);
 
 export { AssessmentApi, QuestionApi, AssessmentFlow };

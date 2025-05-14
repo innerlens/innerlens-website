@@ -12,3 +12,8 @@
     font-size: 6rem;
     font-weight: 200;
 }
+
+em {
+    font-style: normal;
+    font-weight: 500;
+}

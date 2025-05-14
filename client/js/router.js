@@ -1,22 +1,54 @@
-import { TestPage } from "./pages/test_page/test_page.js";
-import { LandingPage } from "./pages/landing_page/landing_page.js";
+import Page from "./enums/page.js";
+import landingPage from "./pages/landingPage.js";
+import appState from "./state/appState.js";
 
-const routes = {
-	landingPage: () => LandingPage.render(),
-	test: () => {
-		TestPage.render();
-	},
-};
+class Router {
+	constructor() {
+		window.addEventListener("popstate", this._handleRoute.bind(this));
+		this._handleRoute();
+	}
 
-function router() {
-	const path = window.location.pathname.split("/")[1] || "landingPage";
+	gotoTest() {
+		const state = appState.getState();
 
-	if (routes[path]) {
-		routes[path]();
-	} else {
-		document.body.innerHTML = `<p>404 - Page not found</p>`;
+		if (state.isUserSignedIn) {
+			this._redirect(Page.TEST);
+		} else {
+			this._redirect("");
+		}
+	}
+
+	_handleRoute() {
+		const state = appState.getState();
+		const path = window.location.pathname.slice(1) || Page.LANDING;
+
+		const isValidPage = Object.values(Page).includes(path);
+		const isRestricted = path === Page.TEST && !state.isUserSignedIn;
+
+		if (!isValidPage || isRestricted) {
+			this._redirect("");
+			appState.setPage(Page.LANDING);
+
+			return;
+		}
+
+		switch (path) {
+			case Page.LANDING:
+				landingPage.render();
+				break;
+			case Page.TEST:
+				testPage.render();
+			default:
+				console.log("womp womp");
+		}
+
+		appState.setPage(path);
+	}
+
+	_redirect(path) {
+		window.history.replaceState({}, "", `/${path}`);
+		this._handleRoute();
 	}
 }
 
-window.addEventListener("popstate", router);
-window.addEventListener("load", router);
+export default new Router();

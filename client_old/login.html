@@ -7,13 +7,13 @@
 	</head>
 	<body>
 		<script type="module">
-			import { API_BASE_URL } from "./js/utils/constants.js";
+			import { CONFIG } from "./js/config/config.js";
 			import AuthService from "./js/logic/auth_service.js";
 
 			const urlParams = new URLSearchParams(window.location.search);
 			const code = urlParams.get("code");
 
-			const response = await fetch(`${API_BASE_URL}/api/auth/`, {
+			const response = await fetch(`${CONFIG.API_BASE_URL}/api/auth/`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ code }),
@@ -25,7 +25,7 @@
 				AuthService.setUserToken(data.jwt);
 			}
 
-			window.location.href = `${API_BASE_URL}/`;
+			window.location.href = `${CONFIG.API_BASE_URL}/`;
 		</script>
 	</body>
 </html>

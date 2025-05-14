@@ -1,5 +1,5 @@
 import AuthService from "../logic/auth_service.js";
-import { API_BASE_URL } from "../utils/constants.js";
+import { CONFIG } from "../config/config.js";
 
 class ApiClient {
 	/**
@@ -18,7 +18,7 @@ class ApiClient {
 		}
 
 		try {
-			const response = await fetch(API_BASE_URL + endpoint, {
+			const response = await fetch(CONFIG.API_BASE_URL + endpoint, {
 				headers,
 				method: "GET",
 			});
@@ -51,7 +51,7 @@ class ApiClient {
 		const headers = {
 			"Content-Type": "application/json",
 		};
-		return await fetch(API_BASE_URL + endpoint, {
+		return await fetch(CONFIG.API_BASE_URL + endpoint, {
 			headers,
 			method: "POST",
 			body: JSON.stringify(body),
@@ -75,7 +75,7 @@ class ApiClient {
 		const headers = {
 			"Content-Type": "application/json",
 		};
-		return await fetch(API_BASE_URL + endpoint, {
+		return await fetch(CONFIG.API_BASE_URL + endpoint, {
 			headers,
 			method: "PUT",
 			body: JSON.stringify(body),
@@ -99,7 +99,7 @@ class ApiClient {
 		const headers = {
 			"Content-Type": "application/json",
 		};
-		return await fetch(API_BASE_URL + endpoint, {
+		return await fetch(CONFIG.API_BASE_URL + endpoint, {
 			headers,
 			method: "PATCH",
 			body: JSON.stringify(body),
@@ -122,7 +122,7 @@ class ApiClient {
 		const headers = {
 			"Content-Type": "application/json",
 		};
-		return await fetch(API_BASE_URL + endpoint, {
+		return await fetch(CONFIG.API_BASE_URL + endpoint, {
 			headers,
 			method: "DELETE",
 			headers: AuthService.getAuthHeader(),
