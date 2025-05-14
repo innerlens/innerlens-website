@@ -1,22 +1,6 @@
 import userApi from "../api/user.js";
 
 class AuthService {
-	constructor() {
-		this.id = null;
-	}
-
-	async init() {
-		const sub = this.getGoogleSub();
-
-		if (!sub) return;
-
-		this.id = await userApi.getUserIdFromSub(sub);
-
-		if (!this.id) this.logout();
-
-		return this.id;
-	}
-
 	isAuthenticated() {
 		return !!localStorage.getItem("userToken");
 	}

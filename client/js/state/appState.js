@@ -1,7 +1,7 @@
 import AppEvent from "../enums/appEvent.js";
 import TestStatus from "../enums/testStatus.js";
 import Page from "../enums/page.js";
-import authService from "../services/auth_service.js";
+import authService from "../services/authService.js";
 
 class AppState {
 	constructor() {
@@ -9,7 +9,8 @@ class AppState {
 			username: authService.getUsername(),
 			isUserSignedIn: authService.isAuthenticated(),
 			currentPage: Page.LANDING,
-			testStatus: TestStatus.NOT_STARTED,
+			testStatus: TestStatus.UNKNOWN,
+			userPersonality: "ABCD",
 		};
 		this.listeners = [];
 	}
@@ -27,6 +28,11 @@ class AppState {
 			this.state = { ...this.state, currentPage: newPage };
 			this._notify(AppEvent.PAGE_CHANGED);
 		}
+	}
+
+	setTestData(testData) {
+		this.state = { ...this.state, ...testData };
+		this._notify(AppEvent.TEST_STATUS_CHANGED);
 	}
 
 	signIn(username) {

@@ -1,4 +1,4 @@
-import ApiClient from "./api_client.js";
+import ApiClient from "./apiClient.js";
 
 class UserApi {
 	async getUserIdFromSub(sub) {

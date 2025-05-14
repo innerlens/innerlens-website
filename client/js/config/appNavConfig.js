@@ -1,5 +1,6 @@
 import Page from "../enums/page.js";
 import AppEvent from "../enums/appEvent.js";
+import authService from "../services/authService.js";
 
 export const AppNavItems = {
 	[Page.LANDING]: {
@@ -54,7 +55,7 @@ export function getButtonById(id) {
 		"sign-out-button": {
 			class: "secondary-button",
 			text: "Sign Out",
-			onClick: () => console.log("Sign Out"),
+			onClick: () => authService.logout(),
 		},
 	};
 	return buttonItems[id] || null;

@@ -1,5 +1,5 @@
 import {
-	HomeSectionButtons,
+	HomeSectionItems,
 	eventsToRender,
 } from "../config/homeSectionConfig.js";
 import { clearElement, createElement } from "../util/dom.js";
@@ -17,7 +17,8 @@ class HomeSection {
 		state = state || appState.getState();
 
 		const buttonObject =
-			HomeSectionButtons[state.isUserSignedIn ? "signedIn" : "signedOut"];
+			HomeSectionItems[state.isUserSignedIn ? "signedIn" : "signedOut"]
+				.buttons;
 
 		const button = createElement("button", {
 			className: buttonObject.class,

@@ -1,4 +1,4 @@
-import authService from "../services/auth_service.js";
+import authService from "../services/authService.js";
 import PATH from "../enums/path.js";
 import HttpStatus from "../enums/httpStatus.js";
 

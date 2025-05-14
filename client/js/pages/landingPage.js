@@ -1,5 +1,6 @@
 import { clearElement, createElement } from "../util/dom.js";
 import homeSection from "../sections/homeSection.js";
+import myPersonalitySection from "../sections/myPersonalitySection.js";
 
 class LandingPage {
 	constructor() {
@@ -15,6 +16,7 @@ class LandingPage {
 		parent.appendChild(landingPage);
 
 		homeSection.render();
+		myPersonalitySection.render();
 	}
 }
 

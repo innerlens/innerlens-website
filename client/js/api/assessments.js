@@ -1,5 +1,5 @@
-import authService from "../services/auth_service.js";
-import ApiClient from "./api_client.js";
+import authService from "../services/authService.js";
+import ApiClient from "./apiClient.js";
 
 // Assessment API - Handles all assessment-related endpoints
 class AssessmentApi {
