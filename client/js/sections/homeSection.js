@@ -4,6 +4,7 @@ import {
 } from "../config/homeSectionConfig.js";
 import { clearElement, createElement } from "../util/dom.js";
 import appState from "../state/appState.js";
+import Page from "../enums/page.js";
 
 class HomeSection {
 	constructor() {
@@ -51,7 +52,7 @@ class HomeSection {
 
 	_onStateChange(event, state) {
 		if (eventsToRender.has(event)) {
-			this.render(state);
+			if (state.currentPage === Page.LANDING) this.render(state);
 		}
 	}
 }

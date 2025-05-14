@@ -1,7 +1,9 @@
 import Page from "./enums/page.js";
 import landingPage from "./pages/landingPage.js";
+import testPage from "./pages/testPage.js";
 import appState from "./state/appState.js";
 import PATH from "./enums/path.js";
+import testState from "./state/testState.js";
 
 class Router {
 	constructor() {
@@ -10,6 +12,8 @@ class Router {
 	}
 
 	gotoTest() {
+		testState.updateQuestions();
+
 		const state = appState.getState();
 
 		if (state.isUserSignedIn) {
@@ -44,7 +48,7 @@ class Router {
 				landingPage.render();
 				break;
 			case Page.TEST:
-				// testPage.render();
+				testPage.render();
 				break;
 			default:
 				console.log("womp womp");

@@ -2,6 +2,7 @@ import {
 	eventsToRender,
 	MyPersonalitySectionItems,
 } from "../config/myPersonalitySectionConfig.js";
+import Page from "../enums/page.js";
 import appState from "../state/appState.js";
 import { createElement, clearElement } from "../util/dom.js";
 
@@ -60,7 +61,7 @@ class MyPersonalitySection {
 
 	_onStateChange(event, state) {
 		if (eventsToRender.has(event)) {
-			this.render(state);
+			if (state.currentPage === Page.LANDING) this.render(state);
 		}
 	}
 }

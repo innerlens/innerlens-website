@@ -10,7 +10,7 @@ class AppState {
 			isUserSignedIn: authService.isAuthenticated(),
 			currentPage: Page.LANDING,
 			testStatus: TestStatus.UNKNOWN,
-			userPersonality: "ABCD",
+			userPersonality: null,
 		};
 		this.listeners = [];
 	}
