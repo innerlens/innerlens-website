@@ -24,6 +24,10 @@ class TestState {
 		return { ...this.state };
 	}
 
+	saveProgress() {
+		console.log("Saving progress");
+	}
+
 	subscribe(callback) {
 		this.listeners.push(callback);
 	}

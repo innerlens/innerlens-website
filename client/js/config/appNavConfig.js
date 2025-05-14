@@ -1,6 +1,7 @@
 import Page from "../enums/page.js";
 import AppEvent from "../enums/appEvent.js";
 import authService from "../services/authService.js";
+import testState from "../state/testState.js";
 
 export const AppNavItems = {
 	[Page.LANDING]: {
@@ -24,7 +25,7 @@ export const AppNavItems = {
 	[Page.TEST]: {
 		signedIn: {
 			navLinks: ["home-link"],
-			buttons: ["sign-out-button"],
+			buttons: ["save-progress-button"],
 		},
 	},
 };
@@ -56,6 +57,11 @@ export function getButtonById(id) {
 			class: "secondary-button",
 			text: "Sign Out",
 			onClick: () => authService.logout(),
+		},
+		"save-progress-button": {
+			class: "secondary-button",
+			text: "Save Progress",
+			onClick: () => testState.saveProgress(),
 		},
 	};
 	return buttonItems[id] || null;
