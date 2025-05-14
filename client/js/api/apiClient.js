@@ -46,74 +46,69 @@ class ApiClient {
 		}
 	}
 
-	/**
-	 * Sends a PUT request to the specified endpoint.
-	 * @param {string} endpoint - The endpoint to send the request to.
-	 * @param {object} body - The request body.
-	 * @returns {Promise<Response>} - The response from the server.
-	 */
-	static async put(endpoint, body) {
-		const headers = {
-			"Content-Type": "application/json",
-		};
-		return await fetch(PATH.API_BASE_URL + endpoint, {
-			headers,
-			method: "PUT",
-			body: JSON.stringify(body),
-			headers: authService.getAuthHeader(),
-		})
-			.then((response) => {
-				return response;
-			})
-			.catch((error) => {
-				console.error(error);
+	static async put(endpoint, body, requiresAuth = true) {
+		const headers = { "Content-Type": "application/json" };
+		if (requiresAuth) Object.assign(headers, authService.getAuthHeader());
+
+		try {
+			const res = await fetch(PATH.API_BASE_URL + endpoint, {
+				method: "PUT",
+				headers,
+				body: JSON.stringify(body),
 			});
+			if (!res.ok) {
+				const err = await res.json();
+				this.handleError(res.status, err);
+				throw new Error(`Request failed: ${res.status}`);
+			}
+			return await res.json();
+		} catch (e) {
+			console.error("PUT request error:", e.message);
+			throw e;
+		}
 	}
 
-	/**
-	 * Sends a PATCH request to the specified endpoint.
-	 * @param {string} endpoint - The endpoint to send the request to.
-	 * @param {object} body - The request body.
-	 * @returns {Promise<Response>} - The response from the server.
-	 */
-	static async patch(endpoint, body) {
-		const headers = {
-			"Content-Type": "application/json",
-		};
-		return await fetch(PATH.API_BASE_URL + endpoint, {
-			headers,
-			method: "PATCH",
-			body: JSON.stringify(body),
-			headers: authService.getAuthHeader(),
-		})
-			.then((response) => {
-				return response;
-			})
-			.catch((error) => {
-				console.error(error);
+	static async patch(endpoint, body, requiresAuth = true) {
+		const headers = { "Content-Type": "application/json" };
+		if (requiresAuth) Object.assign(headers, authService.getAuthHeader());
+
+		try {
+			const res = await fetch(PATH.API_BASE_URL + endpoint, {
+				method: "PATCH",
+				headers,
+				body: JSON.stringify(body),
 			});
+			if (!res.ok) {
+				const err = await res.json();
+				this.handleError(res.status, err);
+				throw new Error(`Request failed: ${res.status}`);
+			}
+			return await res.json();
+		} catch (e) {
+			console.error("PATCH request error:", e.message);
+			throw e;
+		}
 	}
 
-	/**
-	 * Sends a DELETE request to the specified endpoint.
-	 * @param {string} endpoint - The endpoint to send the request to.
-	 * @returns {Promise<Response>} - The response from the server.
-	 */
-	static async delete(endpoint) {
-		const headers = {
-			"Content-Type": "application/json",
-		};
-		return await fetch(PATH.API_BASE_URL + endpoint, {
-			headers,
-			method: "DELETE",
-			headers: authService.getAuthHeader(),
-		})
-			.then((response) => {
-				return response;
-			})
-			.catch((error) => {
-				console.error(error);
+	static async delete(endpoint, requiresAuth = true) {
+		const headers = { "Content-Type": "application/json" };
+		if (requiresAuth) Object.assign(headers, authService.getAuthHeader());
+
+		try {
+			const res = await fetch(PATH.API_BASE_URL + endpoint, {
+				method: "DELETE",
+				headers,
 			});
+			if (!res.ok) {
+				const err = await res.json();
+				this.handleError(res.status, err);
+				throw new Error(`Request failed: ${res.status}`);
+			}
+			return await res.json();
+		} catch (e) {
+			console.error("DELETE request error:", e.message);
+			throw e;
+		}
 	}
 
 	static handleError(status, errorData) {

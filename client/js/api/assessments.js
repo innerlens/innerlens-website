@@ -12,19 +12,17 @@ class AssessmentApi {
 	}
 
 	static async completeAssessment(assessmentId) {
-		return (
-			await ApiClient.patch(`/api/assessment/${assessmentId}`, {
-				completed_at: new Date().toISOString(),
-			})
-		).json();
+		return await ApiClient.patch(`/api/assessment/${assessmentId}`, {
+			completed_at: new Date().toISOString(),
+		});
 	}
 
 	static async getAssessmentResults(assessmentId) {
-		return (await ApiClient.get(`/result/${assessmentId}`)).json();
+		return await ApiClient.get(`/api/assessment/result/${assessmentId}`);
 	}
 
 	static async getPersonalityCodeInfo(personalityCode) {
-		return (await ApiClient.get(`/code/${personalityCode}`)).json();
+		return await ApiClient.get(`/api/personality/code/${personalityCode}`);
 	}
 }
 
@@ -35,13 +33,11 @@ class QuestionApi {
 	}
 
 	static async submitAnswer(assessmentId, questionId, questionOptionId) {
-		return (
-			await ApiClient.post("/api/response", {
-				assessment_id: assessmentId,
-				question_id: questionId,
-				question_option_id: questionOptionId,
-			})
-		).json();
+		return await ApiClient.post("/api/response", {
+			assessment_id: assessmentId,
+			question_id: questionId,
+			question_option_id: questionOptionId,
+		});
 	}
 
 	static async getAnsweredQuestions(assessmentId) {

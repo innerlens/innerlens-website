@@ -30,7 +30,7 @@ export const MyPersonalitySectionItems = {
 			class: "primary-button",
 			text: "Take the Test",
 			onClick: () =>
-				import("../router.js").then((mod) => mod.default.gotoTest()),
+				import("../router.js").then((mod) => mod.default.newTest()),
 		},
 	},
 	[TestStatus.IN_PROGRESS]: {
@@ -42,7 +42,9 @@ export const MyPersonalitySectionItems = {
 			class: "primary-button",
 			text: "Resume Personality Test",
 			onClick: () =>
-				import("../router.js").then((mod) => mod.default.gotoTest()),
+				import("../router.js").then((mod) =>
+					mod.default.continueTest()
+				),
 		},
 	},
 	[TestStatus.COMPLETED]: {
@@ -57,7 +59,7 @@ export const MyPersonalitySectionItems = {
 			class: "primary-button",
 			text: "Retake the Test",
 			onClick: () =>
-				import("../router.js").then((mod) => mod.default.gotoTest()),
+				import("../router.js").then((mod) => mod.default.newTest()),
 		},
 	},
 };

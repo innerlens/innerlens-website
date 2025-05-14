@@ -6,7 +6,7 @@ export const HomeSectionItems = {
 			class: "primary-button",
 			text: "Start Personality Test",
 			onClick: () =>
-				import("../router.js").then((mod) => mod.default.gotoTest()),
+				import("../router.js").then((mod) => mod.default.newTest()),
 		},
 	},
 	signedOut: {

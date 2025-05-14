@@ -16,6 +16,8 @@ class TestPage {
 	render(state) {
 		state = state || testState.getState();
 
+		const questions = state.currentQuestions;
+
 		const testPage = createElement("section", { id: this.id });
 		const parent = document.querySelector("main");
 
@@ -27,26 +29,51 @@ class TestPage {
 		clearElement(parent);
 		parent.appendChild(testPage);
 
-		const questions = testState.getState().questions;
+		if (questions && questions.length) {
+			console.log(state);
 
-		if (!questions) return;
+			questions.map((data) => {
+				const card = new QuestionCard(
+					data.id,
+					data.prompt,
+					data.options,
+					this._handleSelect.bind(this)
+				);
+				card.render();
+			});
 
-		console.log(questions);
+			const button = createElement("button", {
+				className: "primary-button",
+				text: state.currentQuestionPage < 5 ? "Next" : "Submit",
+				events: {
+					["click"]: this._handleNextButtonClick,
+				},
+			});
 
-		questions.map((data, index) => {
-			const card = new QuestionCard(
-				index,
-				data.prompt,
-				data.options,
-				this._handleSelect.bind(this)
-			);
-			card.render();
-			return card;
-		});
+			testPage.appendChild(button);
+		} else {
+			const loadingText = createElement("p", {
+				text: "Loading questions",
+			});
+
+			testPage.appendChild(loadingText);
+		}
 	}
 
 	_handleSelect(index, selectedOption) {
-		console.log(`Q${index + 1}: ${selectedOption}`);
+		console.log(`Q${index}: ${selectedOption}`);
+
+		const [questionId, traidId] = selectedOption.split("-").map(Number);
+
+		testState.answerQuestion(questionId, traidId);
+	}
+
+	_handleNextButtonClick() {
+		if (testState.getState().currentQuestionPage < 5) {
+			testState.goToNextPageIfComplete();
+		} else {
+			testState.completeTest();
+		}
 	}
 
 	_onStateChange(event, state) {

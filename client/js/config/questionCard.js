@@ -1,9 +1,9 @@
 import { clearElement, createElement } from "../util/dom.js";
 
 class QuestionCard {
-	constructor(index, question, options, onSelectCallback = null) {
+	constructor(questionId, question, options, onSelectCallback = null) {
 		this.parentId = "question-list";
-		this.index = index;
+		this.questionId = questionId;
 		this.question = question;
 		this.options = [...options];
 		this.selectedOption = null;
@@ -12,22 +12,22 @@ class QuestionCard {
 
 	handleSelect(event) {
 		if (event.target.tagName === "INPUT" && event.target.type === "radio") {
-			this.selectedOption = event.target.value;
-			this.onSelectCallback?.(this.index, this.selectedOption);
+			this.selectedOption = event.target;
+			this.onSelectCallback?.(this.questionId, this.selectedOption.id);
 		}
 	}
 
 	render() {
 		const ul = createElement("ul", { className: "options" });
 
-		this.options.forEach((option, i) => {
-			const inputId = `option-${this.index}-${i}`;
+		this.options.forEach((option) => {
+			const inputId = `${this.questionId}-${option.trait_id}`;
 
 			const input = createElement("input", {
 				attributes: {
 					type: "radio",
 					id: inputId,
-					name: `${this.index}`,
+					name: `${this.questionId}`,
 					value: option.statement,
 				},
 			});
@@ -52,7 +52,7 @@ class QuestionCard {
 
 		const li = createElement("li", {
 			className: "question-card",
-			id: `question-${this.index}`,
+			id: `question-${this.questionId}`,
 		});
 
 		const p = createElement("p", { text: this.question });

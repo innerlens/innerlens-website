@@ -37,13 +37,19 @@ class DataRetrievalService {
 		} else {
 			const latestAssessment = assessments[assessments.length - 1];
 
+			this.assessmentId = latestAssessment.id;
+
 			if (!latestAssessment.completed_at) {
 				testStatus = TestStatus.IN_PROGRESS;
 			} else {
 				testStatus = TestStatus.COMPLETED;
-				userPersonality = await AssessmentApi.getAssessmentResults(
+				const resposne = await AssessmentApi.getAssessmentResults(
 					latestAssessment.id
 				);
+
+				userPersonality = resposne.personality_code;
+
+				console.log(resposne);
 			}
 		}
 
