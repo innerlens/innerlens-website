@@ -1,68 +1,49 @@
-import AuthService from "../logic/auth_service.js";
-import { CONFIG } from "../config/config.js";
+import authService from "../services/auth_service.js";
+import PATH from "../enums/path.js";
+import HttpStatus from "../enums/httpStatus.js";
 
 class ApiClient {
-	/**
-	 * Sends a GET request to the specified endpoint.
-	 * @param {string} endpoint - The endpoint to send the request to.
-	 * @param {boolean} requiresAuth - Optional. Indicates if the request requires authorization. Defaults to true.
-	 * @returns {Promise<Response>} - The response from the server.
-	 */
 	static async get(endpoint, requiresAuth = true) {
-		const headers = {
-			"Content-Type": "application/json",
-		};
-		if (requiresAuth) {
-			const authHeader = AuthService.getAuthHeader();
-			Object.assign(headers, authHeader); // Merge headers with authHeader
-		}
+		const headers = { "Content-Type": "application/json" };
+		if (requiresAuth) Object.assign(headers, authService.getAuthHeader());
 
 		try {
-			const response = await fetch(CONFIG.API_BASE_URL + endpoint, {
-				headers,
+			const res = await fetch(PATH.API_BASE_URL + endpoint, {
 				method: "GET",
+				headers,
 			});
-
-			if (!response.ok) {
-				// Handle errors based on the response status
-				const errorData = await response.json();
-				console.error("Error from server:", errorData);
-				throw new Error(
-					`Request failed with status: ${response.status}`
-				);
+			if (!res.ok) {
+				const err = await res.json();
+				this.handleError(res.status, err);
+				throw new Error(`Request failed: ${res.status}`);
 			}
-
-			// Parse and return the JSON response if it's successful
-			const data = await response.json();
-			return data;
-		} catch (error) {
-			console.error("Error during GET request:", error.message);
-			throw error; // Re-throw the error to be handled upstream
+			return await res.json();
+		} catch (e) {
+			console.error("GET request error:", e.message);
+			throw e;
 		}
 	}
 
-	/**
-	 * Sends a POST request to the specified endpoint.
-	 * @param {string} endpoint - The endpoint to send the request to.
-	 * @param {object} body - The request body.
-	 * @returns {Promise<Response>} - The response from the server.
-	 */
-	static async post(endpoint, body) {
-		const headers = {
-			"Content-Type": "application/json",
-		};
-		return await fetch(CONFIG.API_BASE_URL + endpoint, {
-			headers,
-			method: "POST",
-			body: JSON.stringify(body),
-			headers: AuthService.getAuthHeader(),
-		})
-			.then((response) => {
-				return response;
-			})
-			.catch((error) => {
-				console.error(error);
+	static async post(endpoint, body, requiresAuth = true) {
+		const headers = { "Content-Type": "application/json" };
+		if (requiresAuth) Object.assign(headers, authService.getAuthHeader());
+
+		try {
+			const res = await fetch(PATH.API_BASE_URL + endpoint, {
+				method: "POST",
+				headers,
+				body: JSON.stringify(body),
 			});
+			if (!res.ok) {
+				const err = await res.json();
+				this.handleError(res.status, err);
+				throw new Error(`Request failed: ${res.status}`);
+			}
+			return await res.json();
+		} catch (e) {
+			console.error("POST request error:", e.message);
+			throw e;
+		}
 	}
 
 	/**
@@ -75,11 +56,11 @@ class ApiClient {
 		const headers = {
 			"Content-Type": "application/json",
 		};
-		return await fetch(CONFIG.API_BASE_URL + endpoint, {
+		return await fetch(PATH.API_BASE_URL + endpoint, {
 			headers,
 			method: "PUT",
 			body: JSON.stringify(body),
-			headers: AuthService.getAuthHeader(),
+			headers: authService.getAuthHeader(),
 		})
 			.then((response) => {
 				return response;
@@ -99,11 +80,11 @@ class ApiClient {
 		const headers = {
 			"Content-Type": "application/json",
 		};
-		return await fetch(CONFIG.API_BASE_URL + endpoint, {
+		return await fetch(PATH.API_BASE_URL + endpoint, {
 			headers,
 			method: "PATCH",
 			body: JSON.stringify(body),
-			headers: AuthService.getAuthHeader(),
+			headers: authService.getAuthHeader(),
 		})
 			.then((response) => {
 				return response;
@@ -122,10 +103,10 @@ class ApiClient {
 		const headers = {
 			"Content-Type": "application/json",
 		};
-		return await fetch(CONFIG.API_BASE_URL + endpoint, {
+		return await fetch(PATH.API_BASE_URL + endpoint, {
 			headers,
 			method: "DELETE",
-			headers: AuthService.getAuthHeader(),
+			headers: authService.getAuthHeader(),
 		})
 			.then((response) => {
 				return response;
@@ -133,6 +114,24 @@ class ApiClient {
 			.catch((error) => {
 				console.error(error);
 			});
+	}
+
+	static handleError(status, errorData) {
+		console.error("Error from server:", errorData);
+
+		switch (status) {
+			case HttpStatus.UNAUTHORIZED:
+				console.warn("Not authenticated.");
+				authService.logout();
+				break;
+			case HttpStatus.FORBIDDEN:
+				console.warn("Not authorized.");
+				alert("Access denied.");
+				authService.logout();
+				break;
+			default:
+				console.error(`Unhandled error: ${status}`);
+		}
 	}
 }
 

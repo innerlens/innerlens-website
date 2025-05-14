@@ -1,13 +1,13 @@
 import AppEvent from "../enums/appEvent.js";
 import TestStatus from "../enums/testStatus.js";
 import Page from "../enums/page.js";
-import AuthService from "../services/auth_service.js";
+import authService from "../services/auth_service.js";
 
 class AppState {
 	constructor() {
 		this.state = {
-			username: AuthService.getUsername(),
-			isUserSignedIn: AuthService.isAuthenticated(),
+			username: authService.getUsername(),
+			isUserSignedIn: authService.isAuthenticated(),
 			currentPage: Page.LANDING,
 			testStatus: TestStatus.NOT_STARTED,
 		};
