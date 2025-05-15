@@ -14,6 +14,8 @@
 			const urlParams = new URLSearchParams(window.location.search);
 			const code = urlParams.get("code");
 
+			console.log(`got code: ${code}`);
+
 			const response = await fetch(`${PATH.API_BASE_URL}/api/auth/`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -26,7 +28,10 @@
 				AuthService.setUserToken(data.jwt);
 			}
 
-			window.location.href = `${PATH.API_BASE_URL}/`;
+			setTimeout(() => {
+				window.location.href = `${PATH.API_BASE_URL}/`;
+			}, 10000);
+			
 		</script>
 	</body>
 </html>

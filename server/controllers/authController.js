@@ -5,6 +5,7 @@ import { HTTP_STATUS } from "../utils/httpStatus.js";
 export async function getGoogleJwt(req, res) {
 	try {
 		const { code } = req.body;
+		console.log('Trying to get jwt');
 
 		const params = new URLSearchParams({
 			code: code,
