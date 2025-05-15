@@ -58,7 +58,8 @@ jobs:
       - name: Create Build Artifact
         run: |
           mkdir -p build
-          cp -r server/* build/
+          cp -r server/ build/
+          cp -r client/ build/
           cd build
           zip -r ../innerlens-api.zip .
           
@@ -93,6 +94,7 @@ jobs:
             GOOGLE_CLIENT_SECRET, clientsecret
             GOOGLE_REDIRECT_URI, redirecturi
             DATABASE_PORT, dbport
+            DATABASE_NAME, dbname
             POSTGRESUSER, postgresuser
             POSTGRESPASSWORD, postgrespass
 
@@ -112,32 +114,84 @@ jobs:
           
           scp -o StrictHostKeyChecking=no -i innerlens-key.pem innerlens-api.zip "ubuntu@$EC2_HOST:~/innerlens-api.zip"
 
-          ssh -o StrictHostKeyChecking=no -i innerlens-key.pem "ubuntu@$EC2_HOST" << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i innerlens-key.pem "ubuntu@$EC2_HOST" '
             sudo apt update
             sudo apt install -y unzip
 
-            rm -rf ~/innerlens-api
+            sudo rm -rf ~/innerlens-api
             unzip -o ~/innerlens-api.zip -d ~/innerlens-api
-            cd ~/innerlens-api
-            npm install
+            cd ~/innerlens-api/server
 
-            cat > .env <<EOL
-            GOOGLE_CLIENT_ID=${{ env.GOOGLE_CLIENT_ID }}
-            GOOGLE_CLIENT_SECRET=${{ env.GOOGLE_CLIENT_SECRET }}
-            GOOGLE_REDIRECT_URI=${{ env.GOOGLE_REDIRECT_URI }}
-            DATABASE_HOST=${{ needs.terraform.outputs.dbhost }}
-            DATABASE_PORT=${{ env.DATABASE_PORT }}
-            DB_NAME=innerlensdb
-            DATABASE_USER=${{ env.POSTGRESUSER }}
-            DATABASE_PASSWORD=${{ env.POSTGRESPASSWORD }}
-            EOL
+            sudo npm install
+            sudo npm install pm2@latest -g
 
-            if pm2 list | grep -q "innerlens-api"; then
-              pm2 delete innerlens-api
-            fi
+            # create .env file
+            echo "GOOGLE_CLIENT_ID=${{ env.GOOGLE_CLIENT_ID }}" > .env
+            echo "GOOGLE_CLIENT_SECRET=${{ env.GOOGLE_CLIENT_SECRET }}" >> .env
+            echo "GOOGLE_REDIRECT_URI=${{ env.GOOGLE_REDIRECT_URI }}" >> .env
+            echo "DATABASE_HOST=${{ needs.terraform.outputs.dbhost }}" >> .env
+            echo "DATABASE_PORT=${{ env.DATABASE_PORT }}" >> .env
+            echo "DATABASE_NAME=${{ env.DATABASE_NAME }}" >> .env
+            echo "DATABASE_USER=${{ env.POSTGRESUSER }}" >> .env
+            echo "DATABASE_PASSWORD=${{ env.POSTGRESPASSWORD }}" >> .env
 
-            pm2 start npm --name innerlens-api -- start
-            EOF
+            # start server
+            pm2 stop all
+            pm2 start server.js --name innerlens --cwd ~/innerlens-api/server
+          '
+
+      - name: Setup Nginx Proxy
+        run: |
+          EC2_HOST=${{ needs.terraform.outputs.ec2host }}
+          ssh -o StrictHostKeyChecking=no -i innerlens-key.pem "ubuntu@$EC2_HOST" '  
+          sudo apt install -y unzip nginx openssl
+
+          # set up ssl certificate
+          sudo mkdir -p /etc/nginx/ssl
+          if [ ! -f /etc/nginx/ssl/certificate.crt ] || [ ! -f /etc/nginx/ssl/privatessl.key ]; then
+            echo "Generating new self-signed certificate..."
+            sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+              -keyout /etc/nginx/ssl/privatessl.key \
+              -out /etc/nginx/ssl/certificate.crt \
+              -subj "/C=US/ST=State/L=City/O=Organization/CN=*.amazonaws.com"
+            sudo chmod 600 /etc/nginx/ssl/privatessl.key
+          else
+            echo "SSL certificate already exists, using existing one."
+          fi
+
+          sudo tee /etc/nginx/sites-available/default > /dev/null << 'EOF'
+          # route http requests to https
+          server {
+            listen 80;
+            server_name *.amazonaws.com;
+            return 301 https://\$host\$request_uri;
+          }
+
+          # route https from port 443 to port 8080
+          server {
+            listen 443 ssl;
+            server_name *.amazonaws.com;
+
+            ssl_certificate /etc/nginx/ssl/certificate.crt;
+            ssl_certificate_key /etc/nginx/ssl/privatessl.key;
+
+            location / {
+              proxy_pass http://localhost:8080;
+              proxy_set_header Host \$host;
+              proxy_set_header X-Real-IP \$remote_addr;
+            }
+          }
+          EOF
+          '
+
+      - name: Test and Run Nginx Proxy
+        run: |
+          EC2_HOST=${{ needs.terraform.outputs.ec2host }}
+          ssh -o StrictHostKeyChecking=no -i innerlens-key.pem "ubuntu@$EC2_HOST" '  
+            sudo nginx -t
+            sudo systemctl enable nginx
+            sudo systemctl restart nginx
+          '
 
   flyway:
     name: Flyway Migrations
@@ -162,6 +216,7 @@ jobs:
         uses: aws-actions/aws-secretsmanager-get-secrets@v2
         with:
           secret-ids: |
+            DATABASE_NAME, dbname
             POSTGRESUSER, postgresuser
             POSTGRESPASSWORD, postgrespass
 
@@ -170,7 +225,7 @@ jobs:
           docker run --rm \
             --volume ${{ github.workspace }}/migrations:/flyway/sql:ro \
             redgate/flyway \
-            -url="jdbc:postgresql://${{ needs.terraform.outputs.dbhost }}/innerlensdb" \
+            -url="jdbc:postgresql://${{ needs.terraform.outputs.dbhost }}/${{ env.DATABASE_NAME }}" \
             -user="${{ env.POSTGRESUSER }}" \
             -password="${{ env.POSTGRESPASSWORD }}" \
             migrate

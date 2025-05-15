@@ -6,19 +6,11 @@ import testState from "../state/testState.js";
 export const AppNavItems = {
 	[Page.LANDING]: {
 		signedIn: {
-			navLinks: [
-				"home-link",
-				"my-personality-link",
-				"personality-types-link",
-			],
+			navLinks: ["home-link", "my-personality-link", "information-link"],
 			buttons: ["sign-out-button"],
 		},
 		signedOut: {
-			navLinks: [
-				"home-link",
-				"my-personality-link",
-				"personality-types-link",
-			],
+			navLinks: ["home-link", "my-personality-link"],
 			buttons: ["sign-in-button"],
 		},
 	},
@@ -37,9 +29,9 @@ export function getNavLinkById(id) {
 			href: "my-personality",
 			text: "My Personality",
 		},
-		"personality-types-link": {
-			href: "personality-types",
-			text: "Personality Types",
+		"information-link": {
+			href: "information",
+			text: "Information",
 		},
 	};
 	return navItems[id] || null;

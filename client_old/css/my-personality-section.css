@@ -1,8 +1,0 @@
-#my-personality {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    height: calc(100% - var(--header-height));
-    gap: var(--gap-m);
-}
-

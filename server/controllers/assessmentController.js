@@ -5,7 +5,6 @@ import { assessmentResponseRepository } from "../repositories/assessmentResponse
 import { dichotomyRepository } from "../repositories/dichotomyRepository.js";
 import { traitRepository } from "../repositories/traitRepository.js";
 import { HTTP_STATUS } from "../utils/httpStatus.js";
-import { questionOptionRepository } from "../repositories/questionOptionRepository.js";
 
 export async function getAssessmentById(req, res) {
 	try {
@@ -148,9 +147,6 @@ export async function getAssessmentResult(req, res) {
 		const traitCounts = {};
 
 		for (const response of responses) {
-			// const option = await questionOptionRepository.findById(
-			// 	response.question_option_id
-			// );
 			if (response.question_option_id) {
 				traitCounts[response.question_option_id] =
 					(traitCounts[response.question_option_id] || 0) + 1;

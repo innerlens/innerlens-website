@@ -3,7 +3,6 @@ import landingPage from "./pages/landingPage.js";
 import testPage from "./pages/testPage.js";
 import appState from "./state/appState.js";
 import PATH from "./enums/path.js";
-import testState from "./state/testState.js";
 import { AssessmentApi } from "./api/assessments.js";
 import dataRetrievalService from "./services/dataRetrievalService.js";
 
@@ -23,15 +22,23 @@ class Router {
 		}
 	}
 
-	newTest() {
+	async newTest() {
 		const state = appState.getState();
 
 		if (state.isUserSignedIn) {
-			AssessmentApi.createAssessment(dataRetrievalService.userId);
+			const response = await AssessmentApi.createAssessment(
+				dataRetrievalService.userId
+			);
+
+			dataRetrievalService.assessmentId = response.id;
 			this._redirect(Page.TEST);
 		} else {
 			this._redirect("");
 		}
+	}
+
+	gotoLanding() {
+		this._redirect("");
 	}
 
 	gotoSignIn() {
@@ -59,7 +66,6 @@ class Router {
 				landingPage.render();
 				break;
 			case Page.TEST:
-				testState.updateQuestions();
 				testPage.render();
 				break;
 			default:

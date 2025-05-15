@@ -1,113 +1,224 @@
 import { AssessmentApi, QuestionApi } from "../api/assessments.js";
+import AppEvent from "../enums/appEvent.js";
+import Page from "../enums/page.js";
 import TestEvent from "../enums/testEvent.js";
 import dataRetrievalService from "../services/dataRetrievalService.js";
+import appState from "./appState.js";
+
+const PAGE_SIZE = 10;
+const MAX_PAGES = 5;
 
 class TestState {
 	constructor() {
-		this.state = {
-			lastAnsweredQuestion: null,
-			answeredQuestions: [],
-			totalQuestions: 0,
-			currentQuestionPage: 0,
-			currentQuestions: [],
-			questions: [],
-		};
-
+		this.#resetState();
 		this.listeners = [];
+
+		appState.subscribe(this.#onAppStateChange.bind(this));
 	}
 
-	async updateQuestions() {
-		this.state.questions = await QuestionApi.getQuestionsWithOptions();
-		this.state.totalQuestions = this.state.questions.length;
-		this._updateCurrentQuestionPage();
-		this._notify(TestEvent.QUESTIONS_LOADED);
+	#resetState() {
+		this.state = {
+			questions: [],
+			answeredQuestions: new Map(),
+			currentPageIndex: 0,
+			currentQuestions: [],
+		};
 	}
 
-	_updateCurrentQuestionPage() {
-		const pageSize = 10;
-		const lastIndex = this.state.lastAnsweredQuestion ?? -1;
-		const nextPageStart = lastIndex + 1;
-		const pageIndex = Math.floor(nextPageStart / pageSize);
-		this.state.currentQuestionPage = pageIndex + 1;
+	async initialise() {
+		const [questions, answered] = await Promise.all([
+			QuestionApi.getQuestionsWithOptions(),
+			QuestionApi.getAnsweredQuestions(dataRetrievalService.assessmentId),
+		]);
 
-		const start = pageIndex * pageSize;
-		const end = start + pageSize;
-		this.state.currentQuestions = this.state.questions.slice(start, end);
-	}
+		answered.sort((a, b) => a.question_id - b.question_id);
+		this.state.questions = questions;
 
-	answerQuestion(questionId, traitId) {
-		this.state.lastAnsweredQuestion = questionId;
+		for (const { id, question_id, question_option_id } of answered) {
+			this.state.answeredQuestions.set(question_id, {
+				answerId: question_option_id,
+				submitted: true,
+				patch: false,
+				referenceId: id,
+			});
+		}
 
-		this.state.answeredQuestions = this.state.answeredQuestions.filter(
-			(entry) => entry.questionId !== questionId
-		);
-
-		this.state.answeredQuestions.push({
-			questionId,
-			answerId: traitId,
-		});
+		this.#updatePageIndex();
+		this.setPage(this.state.currentPageIndex);
 
 		console.log(this.state);
 	}
 
-	goToNextPageIfComplete() {
-		// const answeredIds = new Set(
-		// 	this.state.answeredQuestions.map((q) => q.questionId)
-		// );
-		// const allAnswered = this.state.currentQuestions.every((q) =>
-		// 	answeredIds.has(q.id)
-		// );
+	answerQuestion(questionId, answerId) {
+		const existing = this.state.answeredQuestions.get(questionId);
 
-		const allAnswered =
-			this.state.currentQuestionPage *
-				this.state.currentQuestions.length ===
-			this.state.answeredQuestions.length;
-
-		if (!allAnswered) {
-			alert(
-				"You must answer all questions on this page before continuing."
-			);
-			return;
+		if (existing != null) {
+			this.state.answeredQuestions.set(questionId, {
+				answerId,
+				submitted: existing.submitted,
+				patch: existing.referenceId != null,
+				referenceId: existing.referenceId,
+			});
+		} else {
+			this.state.answeredQuestions.set(questionId, {
+				answerId,
+				submitted: false,
+				patch: false,
+				referenceId: null,
+			});
 		}
 
-		// Update to next page only if there are more questions
-		const nextPageStartIndex = this.state.currentQuestionPage * 10;
-		if (nextPageStartIndex < this.state.questions.length) {
-			this.state.currentQuestionPage++;
-			this._updateCurrentQuestionPage();
-			this._notify(TestEvent.QUESTIONS_LOADED);
-			window.scrollTo({ top: 0, behavior: "smooth" });
+		this.state.answeredQuestions = new Map(
+			[...this.state.answeredQuestions.entries()].sort(
+				(a, b) => a[0] - b[0]
+			)
+		);
+
+		this.#notify(TestEvent.QUESTION_ANSWERED);
+		console.log(this.state);
+	}
+
+	allCurrentQuestionsAnswered() {
+		return this.state.currentQuestions.every((q) =>
+			this.state.answeredQuestions.has(q.id)
+		);
+	}
+
+	goToNextPage() {
+		if (!this.allCurrentQuestionsAnswered()) return false;
+
+		this.#submitPendingAnswers();
+
+		const nextPageIndex = this.state.currentPageIndex + 1;
+		const totalPages = this.getTotalPages();
+
+		if (nextPageIndex < totalPages) {
+			this.setPage(nextPageIndex);
+			return true;
+		}
+
+		this.completeTest();
+		return false;
+	}
+
+	goToPreviousPage() {
+		if (this.state.currentPageIndex > 0) {
+			this.setPage(this.state.currentPageIndex - 1);
+			return true;
+		}
+		return false;
+	}
+
+	setPage(index) {
+		const totalPages = this.getTotalPages();
+		if (index >= 0 && index < totalPages) {
+			this.state.currentPageIndex = index;
+			this.state.currentQuestions = this.getQuestionsForPage(index);
+			this.#notify(TestEvent.QUESTIONS_LOADED);
 		}
 	}
 
-	completeTest() {
-		this.state.answeredQuestions.forEach((data) => {
-			QuestionApi.submitAnswer(
-				dataRetrievalService.assessmentId,
-				data.questionId,
-				data.answerId
-			);
-		});
+	getQuestionsForPage(index) {
+		const start = index * PAGE_SIZE;
+		const end = start + PAGE_SIZE;
+		return this.state.questions.slice(start, end);
+	}
 
+	getTotalPages() {
+		return Math.ceil(this.state.questions.length / PAGE_SIZE);
+	}
+
+	async completeTest() {
+		if (!this.allCurrentQuestionsAnswered()) return false;
+
+		await this.#submitPendingAnswers();
 		AssessmentApi.completeAssessment(dataRetrievalService.assessmentId);
+		this.#notify(TestEvent.TEST_COMPLETED);
+		return true;
 	}
 
 	saveProgress() {
-		AssessmentApi.completeAssessment(dataRetrievalService.assessmentId);
+		this.#submitPendingAnswers();
 	}
 
 	getState() {
-		return { ...this.state };
+		return {
+			...this.state,
+			answeredQuestions: Array.from(
+				this.state.answeredQuestions.entries()
+			),
+		};
 	}
 
 	subscribe(callback) {
 		this.listeners.push(callback);
 	}
 
-	_notify(event) {
-		this.listeners.forEach((callback) =>
-			callback(event, { ...this.state })
-		);
+	async #submitPendingAnswers() {
+		for (const [
+			questionId,
+			entry,
+		] of this.state.answeredQuestions.entries()) {
+			if (!entry.submitted) {
+				console.log("submitting");
+				console.log(entry);
+
+				const res = await QuestionApi.submitAnswer(
+					dataRetrievalService.assessmentId,
+					questionId,
+					entry.answerId
+				);
+				entry.submitted = true;
+
+				console.log(res);
+			} else if (entry.patch) {
+				console.log("updating");
+
+				const res = await QuestionApi.updateAnswer(
+					entry.referenceId,
+					entry.answerId
+				);
+
+				console.log(res);
+				entry.submitted = true;
+				entry.patch = false;
+			}
+		}
+	}
+
+	#updatePageIndex() {
+		const answeredIds = [...this.state.answeredQuestions.keys()];
+		const highestAnswered = answeredIds.length
+			? Math.max(...answeredIds)
+			: -1;
+
+		let index = Math.floor(highestAnswered / PAGE_SIZE);
+		index = Math.max(index, 0);
+		index = Math.min(index, MAX_PAGES - 1);
+		this.state.currentPageIndex = index;
+	}
+
+	#notify(event) {
+		const snapshot = this.getState();
+		this.listeners.forEach((callback) => callback(event, snapshot));
+	}
+
+	#onAppStateChange(event, state) {
+		switch (event) {
+			case AppEvent.USER_SIGNED_IN:
+				if (state.currentPage == Page.TEST && state.isUserSignedIn) {
+					this.initialise();
+				}
+				break;
+			case AppEvent.USER_SIGNED_OUT:
+				this.#resetState();
+				break;
+			case AppEvent.PAGE_CHANGED:
+				if (state.currentPage == Page.TEST && state.isUserSignedIn) {
+					this.initialise();
+				}
+				break;
+		}
 	}
 }
 

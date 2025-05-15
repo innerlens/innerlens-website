@@ -1,14 +1,8 @@
-#my-personality {
+#information {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: var(--gap-l);
     justify-content: start;
     align-items: start;
-    margin-bottom: var(--gap-l);
-}
-
-p.info {
-    font-size: 2rem;
-    font-weight: 200;
 }
