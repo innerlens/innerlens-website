@@ -6,7 +6,7 @@ import { createElement, clearElement } from "../util/dom.js";
 
 class PersonalityInformationSection {
 	constructor() {
-		this.id = "personality-information";
+		this.id = "personality-types";
 		this.parentId = "landing-page";
 		this.heading = "Personality Types";
 
