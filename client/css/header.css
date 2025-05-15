@@ -1,0 +1,33 @@
+@import url("navigation.css");
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    position: fixed;
+    top: 0;
+    height: var(--header-height);
+    width: 100%;
+    z-index: 10;
+
+    padding: var(--gap-l);
+    background-color: transparent;
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
+    mask-image: linear-gradient(to top, transparent 0%, rgba(0,0,0,0.5) 10%, black 20%);
+    mask-size: 100% 100%;
+    
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, rgba(0,0,0,0.5) 10%, black 20%);
+    -webkit-mask-size: 100% 100%;
+}
+
+#header-ul {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-m);
+    font-size: 1.5rem;
+    font-weight: 200;
+}

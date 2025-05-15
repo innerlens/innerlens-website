@@ -1,0 +1,16 @@
+a.nav-link {
+    all: unset;
+    --duration: 200ms;
+    border-radius: var(--border-radius);
+
+    transition: background-color var(--duration) linear,
+                font-weight var(--duration) linear,
+                padding var(--duration) linear;
+    cursor: pointer;
+}
+
+a.nav-link.active {
+    font-weight: 500;
+    padding: var(--gap-xs) var(--gap-s);
+    background-color: rgb(255, 255, 255, 0.1);
+}

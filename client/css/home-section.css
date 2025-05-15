@@ -1,0 +1,14 @@
+#home {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-l);
+    justify-content: center;
+    align-items: start;
+}
+
+#slogan {
+    font-size: 6rem;
+    font-weight: 200;
+}

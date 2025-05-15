@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Personality Test</title>
+		<link rel="stylesheet" href="./css/login.css" />
+	</head>
+	<body>
+		<script type="module">
+			import PATH from "./js/enums/path.js";
+			import AuthService from "./js/services/authService.js";
+
+			const urlParams = new URLSearchParams(window.location.search);
+			const code = urlParams.get("code");
+
+			const response = await fetch(`${PATH.API_BASE_URL}/api/auth/`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ code }),
+			});
+
+			const data = await response.json();
+
+			if (data.jwt) {
+				AuthService.setUserToken(data.jwt);
+			}
+
+			window.location.href = `${PATH.API_BASE_URL}/`;
+		</script>
+	</body>
+</html>

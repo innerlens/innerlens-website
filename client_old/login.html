@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Personality Test</title>
+	</head>
+	<body>
+		<script type="module">
+			import { CONFIG } from "./js/config/config.js";
+			import AuthService from "./js/logic/auth_service.js";
+
+			const urlParams = new URLSearchParams(window.location.search);
+			const code = urlParams.get("code");
+
+			const response = await fetch(`${CONFIG.API_BASE_URL}/api/auth/`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ code }),
+			});
+
+			const data = await response.json();
+
+			if (data.jwt) {
+				AuthService.setUserToken(data.jwt);
+			}
+
+			window.location.href = `${CONFIG.API_BASE_URL}/`;
+		</script>
+	</body>
+</html>

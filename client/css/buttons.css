@@ -1,0 +1,32 @@
+button {
+    all: unset;
+    padding: var(--gap-s);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+button.primary-button {
+    background: linear-gradient(to right, var(--purple), var(--orange));
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+button.secondary-button {
+    position: relative;
+    padding: var(--gap-xs) var(--gap-s);
+    background-clip: padding-box;
+}
+
+button.secondary-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: round(up, var(--border-width), 1px);
+    border-radius: var(--border-radius);
+    background: linear-gradient(to bottom right, var(--purple), var(--orange));
+    mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    z-index: -1;
+}

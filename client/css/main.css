@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+@import url("variables.css");
+@import url("header.css");
+@import url("landing-page.css");
+@import url("test-page.css");
+@import url("buttons.css");
+@import url("canvas.css");
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* outline: 1px solid yellow; */
+}
+
+html {
+    font-size: var(--font-rem);
+    scroll-padding-top: var(--header-height);
+    scroll-behavior: smooth;
+}
+
+body {
+    height: 100vh;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: "DM Sans", sans-serif;
+    user-select: none;
+    overflow: visible;
+    text-shadow: 0 0 2vmin  var(--background-color);
+}
+
+main {
+    height: 100%;
+    overflow: visible;
+}
+
+h1 {
+    font-size: 3rem;
+    line-height: 1;
+    text-align: center;
+}
+
+h2 {
+    font-size: 6rem;
+    font-weight: 400;
+}
+
+h3 {
+    font-size: 3rem;
+    font-weight: 250;
+}
+
+h4 {
+    font-size: 3rem;
+    font-weight: 250;
+}
+
+p {
+    font-size: 1.5rem;
+}
+
+section {
+    padding-left: var(--gap-l);
+    padding-right: var(--gap-l);
+}
+
+ul {
+    list-style-type: none;
+}
+
+em {
+    font-style: normal;
+    font-weight: 500;
+}

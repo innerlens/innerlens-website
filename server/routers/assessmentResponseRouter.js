@@ -10,6 +10,7 @@ import {
     getAssessmentResponseById,
     createAssessmentResponse,
     getAllAssessmentResponsesByAssessmentyId,
+    updateAssessmentResponse,
 } from '../controllers/assessmentResponseController.js';
 
 export const responseRouter = express.Router();
@@ -30,6 +31,19 @@ responseRouter.get('/assessment/:id',
     }),
     getAllAssessmentResponsesByAssessmentyId
   );
+
+responseRouter.patch(
+  '/:id', 
+  validateUrlParams({
+    id: { type: 'integer', required: true }
+  }),
+  validateRequestBody({
+    assessment_id: { type: 'integer', required: false },
+    question_id: { type: 'integer', required: false },
+    question_option_id: { type: 'integer', required: false },
+  }), 
+  updateAssessmentResponse
+);
 
 responseRouter.post(
   '/', 
