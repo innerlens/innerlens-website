@@ -34,6 +34,12 @@ app.use('/api/response', responseRouter)
 app.use('/api/personality', personalityRouter)
 app.use('/api/trait', traitRouter)
 
+// public endpoint for zero ssl
+app.get('/.well-known/pki-validation/', (req, res) => {
+  const filePath = path.join(__dirname, '05DEB4B86596693B530CE47820ECD891.txt');
+  res.sendFile(filePath);
+});
+
 // fallback for frontend
 app.use((req, res, next) => {
   if (req.path.startsWith('/api') || path.extname(req.path)) {
