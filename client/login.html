@@ -20,6 +20,7 @@
 				body: JSON.stringify({ code }),
 			});
 
+			console.log(`Google OAuth Response: ${response}`);
 			const data = await response.json();
 
 			if (data.jwt) {
