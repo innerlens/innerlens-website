@@ -11,7 +11,8 @@ class AppState {
 			currentPage: Page.LANDING,
 			testStatus: TestStatus.UNKNOWN,
 			userPersonality: null,
-			personalityTypes: []
+			personalityTypes: [],
+			personalityTraits: [],
 		};
 		this.listeners = [];
 	}
@@ -41,6 +42,10 @@ class AppState {
 		this._notify(AppEvent.PERSONALITY_TYPES_LOADED);
 	}
 
+	setPersonalityTraits(personalityTraits) {
+		this.state = { ...this.state, personalityTraits: personalityTraits };
+		this._notify(AppEvent.PERSONALITY_TYPES_LOADED);
+	}
 
 	signIn(username) {
 		if (!this.state.isUserSignedIn) {

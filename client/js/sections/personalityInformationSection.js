@@ -4,11 +4,11 @@ import Page from "../enums/page.js";
 import { eventsToRender } from "../config/homeSectionConfig.js";
 import { createElement, clearElement } from "../util/dom.js";
 
-class PersonalityInformationSection {
+class InformationSection {
 	constructor() {
-		this.id = "personality-types";
+		this.id = "information";
 		this.parentId = "landing-page";
-		this.heading = "Personality Types";
+		this.heading = "Information";
 
 		appState.subscribe(this._onStateChange.bind(this));
 	}
@@ -25,28 +25,51 @@ class PersonalityInformationSection {
 		clearElement(article);
 		article.appendChild(heading);
 
-        const { personalityTypes } = state;
+		// get necessary information
+
+        const { personalityTypes, personalityTraits } = state;
 
         if (!personalityTypes || personalityTypes.length === 0) {
             await this._loadPersonalityTypes();
         }
+        if (!personalityTraits || personalityTraits.length === 0) {
+            await this._loadPersonalityTraits();
+        }
 
         const updatedTypes = appState.getState().personalityTypes;
+		const updatedTraits = appState.getState().personalityTraits;
 
-        updatedTypes.forEach((type) => {
+		// display different traits
+		const traitHeading = createElement("h3", { text: `8 Different Personality Traits` });
+		const br = createElement("br")
 
-            const name = createElement("h3", { text: `${type.code} – ${type.name}` });
-            const description = createElement("p", { text: type.description });
-			const br = createElement("br")
+		article.appendChild(traitHeading);
+		article.appendChild(br);
 
-            article.appendChild(name);
-            article.appendChild(description);
+        updatedTraits.forEach((type) => {
+			const traitName = createElement("em", { text: `${type.name}`});
+            const trait = createElement("p", { text: `${type.description}` });
+			article.appendChild(traitName);
+            article.appendChild(trait);
 			article.appendChild(br);
         });
 
+		article.appendChild(br);
+
+		// display personality types
+		const personalityHeading = createElement("h3", { text: `16 Different Personality Types` });
+
+		article.appendChild(personalityHeading);
+		article.appendChild(br);
+
+        updatedTypes.forEach((type) => {
+            const personality = createElement("p", { text: `${type.name} - ${type.code}` });
+            article.appendChild(personality);
+        });
+
+		article.appendChild(br);
 		document.getElementById(this.parentId).append(article);
     }
-
 
 	async _loadPersonalityTypes() {
 		try {
@@ -57,6 +80,15 @@ class PersonalityInformationSection {
 		}
 	}
 
+	async _loadPersonalityTraits() {
+		try {
+			const personalityTraits = await PersonalityApi.getAllPersonalityTraits();
+			appState.setPersonalityTraits(personalityTraits);
+		} catch (error) {
+			console.error("Failed to load personality traits:", error);
+		}
+	}
+
 	_onStateChange(event, state) {
 		if (eventsToRender.has(event)) {
 			if (state.currentPage === Page.LANDING) this.render(state);
@@ -64,5 +96,5 @@ class PersonalityInformationSection {
 	}
 }
 
-const personalityInformationSection = new PersonalityInformationSection();
+const personalityInformationSection = new InformationSection();
 export default personalityInformationSection;
