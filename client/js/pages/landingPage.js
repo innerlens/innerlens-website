@@ -22,3 +22,4 @@ class LandingPage {
 
 const landingPage = new LandingPage();
 export default landingPage;
+export { LandingPage };

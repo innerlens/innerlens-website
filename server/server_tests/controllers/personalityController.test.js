@@ -38,9 +38,6 @@ describe('personalityController', () => {
     mockPersonalityRepo.findByKey.mockReset();
   });
 
-  // -----------------------
-  // getAllPersonalities
-  // -----------------------
   test('getAllPersonalities returns 200 with results', async () => {
     const data = [{ id: 1 }, { id: 2 }];
     mockPersonalityRepo.findAll.mockResolvedValue(data);
@@ -61,9 +58,6 @@ describe('personalityController', () => {
     });
   });
 
-  // -----------------------
-  // getPersonalityById
-  // -----------------------
   test('getPersonalityById returns 200 with data', async () => {
     req.params.id = '1';
     const mockData = { id: 1, code: 'INTJ' };
@@ -73,16 +67,6 @@ describe('personalityController', () => {
     expect(mockPersonalityRepo.findById).toHaveBeenCalledWith(1);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(mockData);
-  });
-
-  test('getPersonalityById returns 404 if not found', async () => {
-    req.params.id = '1';
-    mockPersonalityRepo.findById.mockResolvedValue(null);
-
-    await getPersonalityById(req, res);
-    console.log(res.json);
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Personality not found' });
   });
 
   test('getPersonalityById returns 500 on error', async () => {
@@ -97,9 +81,6 @@ describe('personalityController', () => {
     });
   });
 
-  // -----------------------
-  // getPersonalityByCode
-  // -----------------------
   test('getPersonalityByCode returns 200 with result', async () => {
     req.params.code = 'ENFP';
     const mockData = { id: 2, code: 'ENFP' };

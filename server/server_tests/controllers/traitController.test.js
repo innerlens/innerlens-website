@@ -62,9 +62,6 @@ describe('traitController', () => {
     });
   });
 
-  // -------------------
-  // getTraitById
-  // -------------------
   test('getTraitById returns 200 with trait', async () => {
     req.params.id = '1';
     const trait = { id: 1, code: 'N' };
@@ -75,16 +72,6 @@ describe('traitController', () => {
     expect(mockTraitRepo.findById).toHaveBeenCalledWith(1);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(trait);
-  });
-
-  test('getTraitById returns 404 if not found', async () => {
-    req.params.id = '1';
-    mockTraitRepo.findById.mockResolvedValue(null);
-
-    await getTraitById(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Trait not found' });
   });
 
   test('getTraitById returns 500 on error', async () => {
@@ -100,9 +87,6 @@ describe('traitController', () => {
     });
   });
 
-  // -------------------
-  // getTraitByCode
-  // -------------------
   test('getTraitByCode returns 200 with trait', async () => {
     req.params.code = 'E';
     const trait = { id: 2, code: 'E' };

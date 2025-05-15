@@ -59,3 +59,4 @@ class HomeSection {
 
 const homeSection = new HomeSection();
 export default homeSection;
+export { HomeSection };

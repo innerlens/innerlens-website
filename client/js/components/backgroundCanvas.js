@@ -33,3 +33,4 @@ class BackgroundCanvas {
 
 const backgroundCanvas = new BackgroundCanvas();
 export default backgroundCanvas;
+export { BackgroundCanvas };

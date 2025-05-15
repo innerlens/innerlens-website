@@ -80,8 +80,8 @@ describe('userController', () => {
 
   test('createUser success', async () => {
     req.body = { google_sub: 'g123', email: 'a@a.com', username: 'new' };
-    mockUserRepo.findByKey.mockResolvedValueOnce(null); // google_sub
-    mockUserRepo.findByKey.mockResolvedValueOnce(null); // email
+    mockUserRepo.findByKey.mockResolvedValueOnce(null); 
+    mockUserRepo.findByKey.mockResolvedValueOnce(null); 
     mockUserRepo.create.mockResolvedValue({ id: 1 });
 
     await createUser(req, res);
@@ -98,8 +98,8 @@ describe('userController', () => {
 
   test('createUser conflict (email)', async () => {
     req.body = { google_sub: 'g123', email: 'a@a.com' };
-    mockUserRepo.findByKey.mockResolvedValueOnce(null); // google_sub
-    mockUserRepo.findByKey.mockResolvedValueOnce(true); // email
+    mockUserRepo.findByKey.mockResolvedValueOnce(null); 
+    mockUserRepo.findByKey.mockResolvedValueOnce(true); 
 
     await createUser(req, res);
     expect(res.status).toHaveBeenCalledWith(409);
@@ -108,7 +108,7 @@ describe('userController', () => {
   test('updateUser success', async () => {
     req.params.id = '1';
     req.body = { email: 'new@email.com' };
-    mockUserRepo.findByKey.mockResolvedValueOnce(null); // no conflict
+    mockUserRepo.findByKey.mockResolvedValueOnce(null); 
     mockUserRepo.update.mockResolvedValue({ id: 1 });
 
     await updateUser(req, res);

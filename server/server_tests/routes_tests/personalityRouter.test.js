@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 
-// Mock middleware and controllers
 const mockAuth = jest.fn((req, res, next) => next());
 const mockValidateParams = jest.fn(() => (req, res, next) => next());
 

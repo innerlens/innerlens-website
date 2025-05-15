@@ -37,9 +37,6 @@ describe('questionOptionController', () => {
     Object.values(mockQuestionOptionRepo).forEach(fn => fn.mockReset());
   });
 
-  // ---------------------------
-  // getQuestionOptionById
-  // ---------------------------
   test('getQuestionOptionById returns 200 with result', async () => {
     req.params.id = '1';
     const option = { id: 1, text: 'Agree' };
@@ -72,9 +69,6 @@ describe('questionOptionController', () => {
     });
   });
 
-  // ---------------------------
-  // getAllQuestionOptions
-  // ---------------------------
   test('getAllQuestionOptions returns 200 with list', async () => {
     const options = [{ id: 1 }, { id: 2 }];
     mockQuestionOptionRepo.findAll.mockResolvedValue(options);
@@ -96,9 +90,6 @@ describe('questionOptionController', () => {
     });
   });
 
-  // ---------------------------
-  // getAllQuestionOptionsByQuestionId
-  // ---------------------------
   test('getAllQuestionOptionsByQuestionId returns 200 with options', async () => {
     req.params.id = '42';
     const options = [{ id: 1, question_id: 42 }];

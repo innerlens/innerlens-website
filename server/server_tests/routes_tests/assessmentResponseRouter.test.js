@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
 import express from 'express';
 
-// Mock all middleware and controllers
 const mockAuth = jest.fn((req, res, next) => next());
 const mockValidateParams = jest.fn(() => (req, res, next) => next());
 const mockValidateBody = jest.fn(() => (req, res, next) => next());
@@ -10,7 +9,6 @@ const mockGetById = jest.fn();
 const mockGetAllByAssessmentId = jest.fn();
 const mockCreate = jest.fn();
 
-// Replace actual implementations with mocks
 jest.unstable_mockModule('../../middleware/authMiddleware.js', () => ({
   authMiddleware: mockAuth,
 }));
@@ -24,7 +22,6 @@ jest.unstable_mockModule('../../controllers/assessmentResponseController.js', ()
   createAssessmentResponse: mockCreate,
 }));
 
-// Dynamically import router after mocks
 const { responseRouter } = await import('../../routers/assessmentResponseRouter.js');
 
 describe('responseRouter', () => {
@@ -32,7 +29,7 @@ describe('responseRouter', () => {
     const stack = responseRouter.stack.find(
       (layer) => layer.route?.path === '/:id' && layer.route?.methods?.get
     );
-    expect(stack.route.stack[0].handle).toBeInstanceOf(Function); // validateUrlParams
+    expect(stack.route.stack[0].handle).toBeInstanceOf(Function); 
     expect(stack.route.stack[1].handle).toBe(mockGetById);
   });
 
@@ -40,7 +37,7 @@ describe('responseRouter', () => {
     const stack = responseRouter.stack.find(
       (layer) => layer.route?.path === '/assessment/:id' && layer.route?.methods?.get
     );
-    expect(stack.route.stack[0].handle).toBeInstanceOf(Function); // validateUrlParams
+    expect(stack.route.stack[0].handle).toBeInstanceOf(Function); 
     expect(stack.route.stack[1].handle).toBe(mockGetAllByAssessmentId);
   });
 
@@ -48,7 +45,7 @@ describe('responseRouter', () => {
     const stack = responseRouter.stack.find(
       (layer) => layer.route?.path === '/' && layer.route?.methods?.post
     );
-    expect(stack.route.stack[0].handle).toBeInstanceOf(Function); // validateRequestBody
+    expect(stack.route.stack[0].handle).toBeInstanceOf(Function); 
     expect(stack.route.stack[1].handle).toBe(mockCreate);
   });
 
@@ -56,9 +53,8 @@ describe('responseRouter', () => {
     const useLayer = responseRouter.stack.find(
       (layer) => !layer.route && layer.name === 'bound dispatch'
     );
-    expect(useLayer).toBeUndefined(); // No `dispatch` middleware should exist outside a route
+    expect(useLayer).toBeUndefined(); 
 
-    // Instead, check the first non-route layer
     const authLayer = responseRouter.stack.find((layer) => !layer.route);
     expect(authLayer?.handle).toBe(mockAuth);
   });

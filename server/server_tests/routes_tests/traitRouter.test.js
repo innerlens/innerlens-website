@@ -41,7 +41,7 @@ describe('traitRouter', () => {
       (layer) => layer.route?.path === '/:id' && layer.route.methods.get
     );
     expect(route).toBeDefined();
-    expect(route.route.stack[0].handle).toBeInstanceOf(Function); // validateUrlParams
+    expect(route.route.stack[0].handle).toBeInstanceOf(Function);
     expect(route.route.stack[1].handle).toBe(mockGetById);
   });
 
@@ -50,7 +50,7 @@ describe('traitRouter', () => {
       (layer) => layer.route?.path === '/code/:code' && layer.route.methods.get
     );
     expect(route).toBeDefined();
-    expect(route.route.stack[0].handle).toBeInstanceOf(Function); // validateUrlParams
+    expect(route.route.stack[0].handle).toBeInstanceOf(Function);
     expect(route.route.stack[1].handle).toBe(mockGetByCode);
   });
 });

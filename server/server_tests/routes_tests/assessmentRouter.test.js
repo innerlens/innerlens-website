@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
 import express from 'express';
 
-// Mock all middleware and controller functions
 const mockAuth = jest.fn((req, res, next) => next());
 const mockValidateParams = jest.fn(() => (req, res, next) => next());
 const mockValidateBody = jest.fn(() => (req, res, next) => next());
@@ -39,7 +38,7 @@ describe('assessmentRouter', () => {
     const route = assessmentRouter.stack.find(
       layer => layer.route?.path === '/:id' && layer.route.methods.get
     );
-    expect(route.route.stack[0].handle).toBeInstanceOf(Function); // validateUrlParams
+    expect(route.route.stack[0].handle).toBeInstanceOf(Function); 
     expect(route.route.stack[1].handle).toBe(mockGetById);
   });
 
@@ -63,7 +62,7 @@ describe('assessmentRouter', () => {
     const route = assessmentRouter.stack.find(
       layer => layer.route?.path === '/' && layer.route.methods.post
     );
-    expect(route.route.stack[0].handle).toBeInstanceOf(Function); // validateRequestBody
+    expect(route.route.stack[0].handle).toBeInstanceOf(Function); 
     expect(route.route.stack[1].handle).toBe(mockCreate);
   });
 
@@ -71,8 +70,8 @@ describe('assessmentRouter', () => {
     const route = assessmentRouter.stack.find(
       layer => layer.route?.path === '/:id' && layer.route.methods.patch
     );
-    expect(route.route.stack[0].handle).toBeInstanceOf(Function); // validateUrlParams
-    expect(route.route.stack[1].handle).toBeInstanceOf(Function); // validateRequestBody
+    expect(route.route.stack[0].handle).toBeInstanceOf(Function);
+    expect(route.route.stack[1].handle).toBeInstanceOf(Function);
     expect(route.route.stack[2].handle).toBe(mockPatch);
   });
 });

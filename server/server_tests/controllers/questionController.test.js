@@ -45,9 +45,6 @@ describe('questionController', () => {
     Object.values(mockOptionRepo).forEach(fn => fn.mockReset());
   });
 
-  // ------------------------
-  // getQuestionById
-  // ------------------------
   test('getQuestionById returns 200 with question only', async () => {
     req.params.id = '1';
     req.query.includeOptions = 'false';
@@ -103,9 +100,6 @@ describe('questionController', () => {
     });
   });
 
-  // ------------------------
-  // getAllQuestions
-  // ------------------------
   test('getAllQuestions returns 200 without options', async () => {
     req.query.includeOptions = 'false';
     const questions = [{ id: 1 }, { id: 2 }];
@@ -155,9 +149,6 @@ describe('questionController', () => {
     });
   });
 
-  // ------------------------
-  // getAllQuestionsByDichotomyId
-  // ------------------------
   test('getAllQuestionsByDichotomyId returns 200 with questions', async () => {
     req.params.id = '2';
     const results = [{ id: 1, dichotomy_id: 2 }];

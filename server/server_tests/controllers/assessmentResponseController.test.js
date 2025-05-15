@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 
-// Mocks
 const mockAssessmentResponseRepo = {
   findById: jest.fn(),
   findAllByKey: jest.fn(),
@@ -56,9 +55,6 @@ describe('assessmentResponseController', () => {
     Object.values(mockOptionRepo).forEach(fn => fn.mockReset());
   });
 
-  // -----------------------
-  // getAssessmentResponseById
-  // -----------------------
   test('getAssessmentResponseById returns 200 with response', async () => {
     req.params.id = '1';
     mockAssessmentResponseRepo.findById.mockResolvedValue({ id: 1 });
@@ -77,9 +73,6 @@ describe('assessmentResponseController', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'Assessment response not found' });
   });
 
-  // -----------------------
-  // getAllAssessmentResponsesByAssessmentyId
-  // -----------------------
   test('getAllAssessmentResponsesByAssessmentyId returns 200 with responses', async () => {
     req.params.id = '99';
     mockAssessmentResponseRepo.findAllByKey.mockResolvedValue([{ id: 1 }, { id: 2 }]);
@@ -89,9 +82,6 @@ describe('assessmentResponseController', () => {
     expect(res.json).toHaveBeenCalledWith([{ id: 1 }, { id: 2 }]);
   });
 
-  // -----------------------
-  // createAssessmentResponse
-  // -----------------------
   test('createAssessmentResponse creates response and returns 201', async () => {
     req.body = { assessment_id: 1, question_id: 2, question_option_id: 3 };
 

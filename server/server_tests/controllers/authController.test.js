@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 
-// Mocks
 const mockVerifyGoogleJwt = jest.fn();
 const mockUserRepo = {
   findByKey: jest.fn(),

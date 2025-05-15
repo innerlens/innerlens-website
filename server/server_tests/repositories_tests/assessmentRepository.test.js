@@ -2,12 +2,10 @@ import { jest } from '@jest/globals';
 
 const mockQueryDb = jest.fn();
 
-// Mock queryDb before importing the module using it
 jest.unstable_mockModule('../../config/dbConfig.js', () => ({
   queryDb: mockQueryDb,
 }));
 
-// Dynamically import the repository after mocking
 const { assessmentRepository } = await import('../../repositories/assessmentRepository.js');
 
 describe('assessmentRepository', () => {

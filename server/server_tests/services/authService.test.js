@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 
-// Mock `jose` methods
 const mockJwtVerify = jest.fn();
 const mockCreateRemoteJWKSet = jest.fn(() => 'MOCK_JWKS');
 
@@ -9,7 +8,6 @@ jest.unstable_mockModule('jose', () => ({
   createRemoteJWKSet: mockCreateRemoteJWKSet,
 }));
 
-// Import after mocks
 const { verifyGoogleJwt } = await import('../../services/authService.js');
 
 describe('verifyGoogleJwt', () => {

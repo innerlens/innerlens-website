@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 
-// Mock middleware and controllers
 const mockAuth = jest.fn((req, res, next) => next());
 const mockValidateParams = jest.fn(() => (req, res, next) => next());
 const mockGetAll = jest.fn();
@@ -40,7 +39,7 @@ describe('dichotomyRouter', () => {
     );
 
     expect(route).toBeDefined();
-    expect(route.route.stack[0].handle).toBeInstanceOf(Function); // validateUrlParams
+    expect(route.route.stack[0].handle).toBeInstanceOf(Function);
     expect(route.route.stack[1].handle).toBe(mockGetById);
   });
 });

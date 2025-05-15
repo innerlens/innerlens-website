@@ -85,3 +85,4 @@ class TestPage {
 
 const testPage = new TestPage();
 export default testPage;
+export { TestPage };

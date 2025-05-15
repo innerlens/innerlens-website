@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
 import express from 'express';
 
-// Mock middleware and controller
 const mockValidateRequestBody = jest.fn(() => (req, res, next) => next());
 const mockGetGoogleJwt = jest.fn();
 
@@ -21,7 +20,7 @@ describe('authRouter', () => {
     );
 
     expect(route).toBeDefined();
-    expect(route.route.stack[0].handle).toBeInstanceOf(Function); // validateRequestBody middleware
+    expect(route.route.stack[0].handle).toBeInstanceOf(Function);
     expect(route.route.stack[1].handle).toBe(mockGetGoogleJwt);
   });
 });

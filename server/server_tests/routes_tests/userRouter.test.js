@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 
-// Mock middleware and controller handlers
 const mockAuth = jest.fn((req, res, next) => next());
 const mockValidateParams = jest.fn(() => (req, res, next) => next());
 
@@ -31,7 +30,7 @@ describe('userRouter', () => {
       (layer) => layer.route?.path === '/:id' && layer.route.methods.get
     );
     expect(route).toBeDefined();
-    expect(route.route.stack[0].handle).toBeInstanceOf(Function); // validateUrlParams
+    expect(route.route.stack[0].handle).toBeInstanceOf(Function); 
     expect(route.route.stack[1].handle).toBe(mockGetUserById);
   });
 
@@ -40,7 +39,7 @@ describe('userRouter', () => {
       (layer) => layer.route?.path === '/google/:id' && layer.route.methods.get
     );
     expect(route).toBeDefined();
-    expect(route.route.stack[0].handle).toBeInstanceOf(Function); // validateUrlParams
+    expect(route.route.stack[0].handle).toBeInstanceOf(Function); 
     expect(route.route.stack[1].handle).toBe(mockGetUserByGoogleId);
   });
 });

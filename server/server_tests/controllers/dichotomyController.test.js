@@ -71,9 +71,6 @@ describe('dichotomyController', () => {
     });
   });
 
-  // -------------------------------
-  // getAllDichotomies
-  // -------------------------------
   test('getAllDichotomies returns 200 with data', async () => {
     const mockList = [{ id: 1 }, { id: 2 }];
     mockDichotomyRepo.findAll.mockResolvedValue(mockList);
