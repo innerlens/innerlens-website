@@ -54,4 +54,39 @@ export async function createAssessmentResponse(req, res) {
     console.error('Create user failed:', err.message);
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Could not create assessment response', detail: err.message });
   }
-}  
+}
+
+export async function updateAssessmentResponse(req, res) {
+  try {
+    const { id } = req.params;
+    const { assessment_id, question_id, question_option_id } = req.body;
+
+    if (!(await assessmentResponseRepository.findById(id))) {
+      return res
+        .status(HTTP_STATUS.NOT_FOUND)
+        .json({ error: "Assessment response does not exist" });
+    }
+
+    if (!await assessmentRepository.findById(assessment_id)) {
+      return res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Assessment does not exist' });
+    }
+
+    if (!await questionRepository.findById(question_id)) {
+      return res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Question does not exist' });
+    }
+
+    if (!await questionOptionRepository.findById(question_option_id)) {
+      return res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Question option does not exist' });
+    }
+
+    const updatedResponse = await assessmentResponseRepository.update(id, { assessment_id, question_id, question_option_id });
+    res.status(HTTP_STATUS.OK).json(updatedResponse);
+
+  } catch (err) {
+		console.error("Update assessment response failed:", err.message);
+		res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+			error: "Could not update assessment response",
+			detail: err.message,
+		});
+  }
+}
