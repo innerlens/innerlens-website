@@ -35,8 +35,14 @@ app.use('/api/personality', personalityRouter)
 app.use('/api/trait', traitRouter)
 
 // public endpoint for zero ssl
-app.get('/.well-known/pki-validation/', (req, res) => {
-  const filePath = path.join(__dirname, '05DEB4B86596693B530CE47820ECD891.txt');
+app.get('/.well-known/pki-validation/:filename', (req, res) => {
+  const requestedFile = req.params.filename;
+
+  if (requestedFile !== '05DEB4B86596693B530CE47820ECD891.txt') {
+    return res.status(404).send('Not Found');
+  }
+
+  const filePath = path.join(__dirname, requestedFile);
   res.sendFile(filePath);
 });
 
