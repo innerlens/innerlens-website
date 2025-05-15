@@ -144,44 +144,44 @@ jobs:
         run: |
           EC2_HOST=${{ needs.terraform.outputs.ec2host }}
           ssh -o StrictHostKeyChecking=no -i innerlens-key.pem "ubuntu@$EC2_HOST" '  
-            sudo apt install -y unzip nginx openssl
+          sudo apt install -y unzip nginx openssl
 
-            # set up ssl certificate
-            sudo mkdir -p /etc/nginx/ssl
-            if [ ! -f /etc/nginx/ssl/certificate.crt ] || [ ! -f /etc/nginx/ssl/privatessl.key ]; then
-              echo "Generating new self-signed certificate..."
-              sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-                -keyout /etc/nginx/ssl/privatessl.key \
-                -out /etc/nginx/ssl/certificate.crt \
-                -subj "/C=US/ST=State/L=City/O=Organization/CN=*.amazonaws.com"
-              sudo chmod 600 /etc/nginx/ssl/privatessl.key
-            else
-              echo "SSL certificate already exists, using existing one."
-            fi
+          # set up ssl certificate
+          sudo mkdir -p /etc/nginx/ssl
+          if [ ! -f /etc/nginx/ssl/certificate.crt ] || [ ! -f /etc/nginx/ssl/privatessl.key ]; then
+            echo "Generating new self-signed certificate..."
+            sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+              -keyout /etc/nginx/ssl/privatessl.key \
+              -out /etc/nginx/ssl/certificate.crt \
+              -subj "/C=US/ST=State/L=City/O=Organization/CN=*.amazonaws.com"
+            sudo chmod 600 /etc/nginx/ssl/privatessl.key
+          else
+            echo "SSL certificate already exists, using existing one."
+          fi
 
-            sudo tee /etc/nginx/sites-available/default > /dev/null <<EOF
-            # route http requests to https
-            server {
-              listen 80;
-              server_name *.amazonaws.com;
-              return 301 https://\$host\$request_uri;
+          sudo tee /etc/nginx/sites-available/default > /dev/null << 'EOF'
+          # route http requests to https
+          server {
+            listen 80;
+            server_name *.amazonaws.com;
+            return 301 https://\$host\$request_uri;
+          }
+
+          # route https from port 443 to port 8080
+          server {
+            listen 443 ssl;
+            server_name *.amazonaws.com;
+
+            ssl_certificate /etc/nginx/ssl/certificate.crt;
+            ssl_certificate_key /etc/nginx/ssl/privatessl.key;
+
+            location / {
+              proxy_pass http://localhost:8080;
+              proxy_set_header Host \$host;
+              proxy_set_header X-Real-IP \$remote_addr;
             }
-
-            # route https from port 443 to port 8080
-            server {
-              listen 443 ssl;
-              server_name *.amazonaws.com;
-
-              ssl_certificate /etc/nginx/ssl/certificate.crt;
-              ssl_certificate_key /etc/nginx/ssl/privatessl.key;
-
-              location / {
-                proxy_pass http://localhost:8080;
-                proxy_set_header Host \$host;
-                proxy_set_header X-Real-IP \$remote_addr;
-              }
-            }
-            EOF
+          }
+          EOF
           '
 
       - name: Test and Run Nginx Proxy
