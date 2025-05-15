@@ -48,10 +48,14 @@ app.get('/.well-known/pki-validation/:filename', (req, res) => {
 
 // fallback for frontend
 app.use((req, res, next) => {
-  if (req.path.startsWith('/api') || path.extname(req.path)) {
+  if (req.path.startsWith("/api") || path.extname(req.path)) {
     return next();
   }
-  res.sendFile(path.join(__dirname, '../client/index.html'));
+  if (req.path.startsWith("/login")) {
+    res.sendFile(path.join(__dirname, "../client/login.html"));
+  } else {
+    res.sendFile(path.join(__dirname, "../client/index.html"));
+  }
 });
 
 const PORT = 8080;
