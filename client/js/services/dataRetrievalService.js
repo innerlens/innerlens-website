@@ -55,6 +55,8 @@ class DataRetrievalService {
 
 		let testStatus = TestStatus.UNKNOWN;
 		let userPersonality = null;
+		let personalityAlias = null;
+		let personalityDescription = null;
 
 		if (!assessments || !assessments.length) {
 			testStatus = TestStatus.NOT_STARTED;
@@ -75,17 +77,29 @@ class DataRetrievalService {
 				testStatus = TestStatus.IN_PROGRESS;
 			} else {
 				testStatus = TestStatus.COMPLETED;
-				const resposne = await AssessmentApi.getAssessmentResults(
+				let response = await AssessmentApi.getAssessmentResults(
 					latestAssessment.id
 				);
 
-				userPersonality = resposne.personality_code;
+				userPersonality = response.personality_code;
 
-				console.log(resposne);
+				response = await personalityApi.getPersonalityByCode(
+					userPersonality
+				);
+
+				personalityAlias = response.name;
+				personalityDescription = response.description;
+
+				console.log(response);
 			}
 		}
 
-		appState.setTestData({ testStatus, userPersonality });
+		appState.setTestData({
+			testStatus,
+			userPersonality,
+			personalityAlias,
+			personalityDescription,
+		});
 	}
 }
 

@@ -47,16 +47,13 @@ h1 {
 h2 {
     font-size: 6rem;
     font-weight: 400;
+    margin-bottom: var(--gap-m);
 }
 
 h3 {
-    font-size: 3rem;
-    font-weight: 250;
-}
-
-h4 {
-    font-size: 3rem;
-    font-weight: 250;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: var(--gap-s);
 }
 
 p {

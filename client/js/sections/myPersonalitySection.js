@@ -37,6 +37,9 @@ class MyPersonalitySection {
 
 		const paragraphObject = items.paragraph;
 		const buttonObject = items.button;
+		const codeObject = items.code;
+		const aliasObject = items.alias;
+		const descriptionObject = items.description;
 
 		if (paragraphObject) {
 			const paragraph = createElement("p", {
@@ -45,6 +48,33 @@ class MyPersonalitySection {
 			});
 
 			article.appendChild(paragraph);
+		}
+
+		if (codeObject) {
+			const code = createElement("p", {
+				text: codeObject.text?.(),
+				id: codeObject.id,
+			});
+
+			article.appendChild(code);
+		}
+
+		if (aliasObject) {
+			const alias = createElement("p", {
+				text: aliasObject.text?.(),
+				id: aliasObject.id,
+			});
+
+			article.appendChild(alias);
+		}
+
+		if (descriptionObject) {
+			const description = createElement("p", {
+				text: descriptionObject.text?.(),
+				id: descriptionObject.id,
+			});
+
+			article.appendChild(description);
 		}
 
 		if (buttonObject) {

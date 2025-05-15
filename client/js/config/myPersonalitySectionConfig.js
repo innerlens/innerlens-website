@@ -51,10 +51,28 @@ export const MyPersonalitySectionItems = {
 		paragraph: {
 			class: "info",
 			text: () => {
-				const userPersonality = appState.getState().userPersonality;
-				return `Your personality type is ${userPersonality}`;
+				return `Your personality type is`;
 			},
 		},
+		code: {
+			id: "code-text",
+			text: () => {
+				return appState.getState().userPersonality;
+			},
+		},
+		alias: {
+			id: "alias-text",
+			text: () => {
+				return appState.getState().personalityAlias;
+			},
+		},
+		description: {
+			id: "description-text",
+			text: () => {
+				return appState.getState().personalityDescription;
+			},
+		},
+
 		button: {
 			class: "primary-button",
 			text: "Retake the Test",

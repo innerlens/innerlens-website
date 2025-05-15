@@ -8,6 +8,10 @@ class PersonalityApi {
 	async getAllPersonalityTraits() {
 		return await ApiClient.get("/api/trait");
 	}
+
+	async getPersonalityByCode(code) {
+		return await ApiClient.get(`/api/personality/code/${code}`);
+	}
 }
 
 const personalityApi = new PersonalityApi();
