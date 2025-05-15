@@ -2,6 +2,7 @@ import testState from "../state/testState.js";
 import { clearElement, createElement } from "../util/dom.js";
 import { eventsToRender } from "../config/testPageConfig.js";
 import QuestionCard from "../config/questionCard.js";
+import router from "../router.js";
 
 class TestPage {
 	constructor() {
@@ -32,11 +33,20 @@ class TestPage {
 		if (questions && questions.length) {
 			console.log(state);
 
-			questions.map((data) => {
+			const answeredQuestions = state.answeredQuestions;
+
+			questions.forEach((data) => {
+				const entry = answeredQuestions.find(
+					([questionId]) => questionId === data.id
+				);
+
+				const answerId = entry ? entry[1].answerId : null;
+
 				const card = new QuestionCard(
 					data.id,
 					data.prompt,
 					data.options,
+					answerId,
 					this._handleSelect.bind(this)
 				);
 				card.render();
@@ -44,7 +54,7 @@ class TestPage {
 
 			const button = createElement("button", {
 				className: "primary-button",
-				text: state.currentQuestionPage < 5 ? "Next" : "Submit",
+				text: state.currentPageIndex < 4 ? "Next" : "Submit",
 				events: {
 					["click"]: this._handleNextButtonClick,
 				},
@@ -68,11 +78,13 @@ class TestPage {
 		testState.answerQuestion(questionId, traidId);
 	}
 
-	_handleNextButtonClick() {
-		if (testState.getState().currentQuestionPage < 5) {
-			testState.goToNextPageIfComplete();
+	async _handleNextButtonClick() {
+		if (testState.getState().currentPageIndex < 4) {
+			testState.goToNextPage();
 		} else {
-			testState.completeTest();
+			if (await testState.completeTest()) {
+				router.gotoLanding();
+			}
 		}
 	}
 

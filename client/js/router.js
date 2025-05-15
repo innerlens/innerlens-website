@@ -3,7 +3,6 @@ import landingPage from "./pages/landingPage.js";
 import testPage from "./pages/testPage.js";
 import appState from "./state/appState.js";
 import PATH from "./enums/path.js";
-import testState from "./state/testState.js";
 import { AssessmentApi } from "./api/assessments.js";
 import dataRetrievalService from "./services/dataRetrievalService.js";
 
@@ -38,6 +37,10 @@ class Router {
 		}
 	}
 
+	gotoLanding() {
+		this._redirect("");
+	}
+
 	gotoSignIn() {
 		const state = appState.getState();
 
@@ -63,7 +66,6 @@ class Router {
 				landingPage.render();
 				break;
 			case Page.TEST:
-				testState.updateQuestions();
 				testPage.render();
 				break;
 			default:

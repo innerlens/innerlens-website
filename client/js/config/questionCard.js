@@ -1,11 +1,18 @@
 import { clearElement, createElement } from "../util/dom.js";
 
 class QuestionCard {
-	constructor(questionId, question, options, onSelectCallback = null) {
+	constructor(
+		questionId,
+		question,
+		options,
+		answerId,
+		onSelectCallback = null
+	) {
 		this.parentId = "question-list";
 		this.questionId = questionId;
 		this.question = question;
 		this.options = [...options];
+		this.answerId = answerId;
 		this.selectedOption = null;
 		this.onSelectCallback = onSelectCallback;
 	}
@@ -21,6 +28,8 @@ class QuestionCard {
 		const ul = createElement("ul", { className: "options" });
 
 		this.options.forEach((option) => {
+			const chosen = this.answerId == option.trait_id;
+
 			const inputId = `${this.questionId}-${option.trait_id}`;
 
 			const input = createElement("input", {
@@ -31,6 +40,10 @@ class QuestionCard {
 					value: option.statement,
 				},
 			});
+
+			if (chosen) {
+				input.checked = true;
+			}
 
 			const label = createElement("label", {
 				className: "option",
