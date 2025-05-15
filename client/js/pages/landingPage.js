@@ -1,6 +1,7 @@
 import { clearElement, createElement } from "../util/dom.js";
 import homeSection from "../sections/homeSection.js";
 import myPersonalitySection from "../sections/myPersonalitySection.js";
+import personalityInformationSection from "../sections/personalityInformationSection.js";
 
 class LandingPage {
 	constructor() {
@@ -17,6 +18,7 @@ class LandingPage {
 
 		homeSection.render();
 		myPersonalitySection.render();
+		personalityInformationSection.render();
 	}
 }
 
