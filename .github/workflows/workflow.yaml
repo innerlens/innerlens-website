@@ -131,7 +131,7 @@ jobs:
             echo "GOOGLE_REDIRECT_URI=${{ env.GOOGLE_REDIRECT_URI }}" >> .env
             echo "DATABASE_HOST=${{ needs.terraform.outputs.dbhost }}" >> .env
             echo "DATABASE_PORT=${{ env.DATABASE_PORT }}" >> .env
-            echo "DB_NAME=${{ env.DATABASE_NAME }}" >> .env
+            echo "DATABASE_NAME=${{ env.DATABASE_NAME }}" >> .env
             echo "DATABASE_USER=${{ env.POSTGRESUSER }}" >> .env
             echo "DATABASE_PASSWORD=${{ env.POSTGRESPASSWORD }}" >> .env
 
