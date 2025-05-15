@@ -1,3 +1,6 @@
+import crypto from 'node:crypto';
+globalThis.crypto = crypto;
+
 import { jwtVerify, createRemoteJWKSet } from 'jose';
 
 const JWKS = createRemoteJWKSet(new URL('https://www.googleapis.com/oauth2/v3/certs'));

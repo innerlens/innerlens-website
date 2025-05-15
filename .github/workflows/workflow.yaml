@@ -118,7 +118,7 @@ jobs:
             sudo apt update
             sudo apt install -y unzip
 
-            rm -rf ~/innerlens-api
+            sudo rm -rf ~/innerlens-api
             unzip -o ~/innerlens-api.zip -d ~/innerlens-api
             cd ~/innerlens-api/server
 
