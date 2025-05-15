@@ -18,6 +18,14 @@ class MyPersonalitySection {
 	render(state) {
 		state = state || appState.getState();
 
+		const article =
+			document.getElementById(this.id) ||
+			createElement("article", { id: this.id });
+
+		clearElement(article);
+		if (!document.getElementById(this.id))
+			document.getElementById(this.parentId).appendChild(article);
+
 		const items =
 			MyPersonalitySectionItems[
 				!state.isUserSignedIn ? "signedOut" : state.testStatus
@@ -25,11 +33,6 @@ class MyPersonalitySection {
 
 		const heading = createElement("h2", { text: this.heading });
 
-		const article =
-			document.getElementById(this.id) ||
-			createElement("article", { id: this.id });
-
-		clearElement(article);
 		article.appendChild(heading);
 
 		const paragraphObject = items.paragraph;
@@ -55,8 +58,6 @@ class MyPersonalitySection {
 
 			article.appendChild(button);
 		}
-
-		document.getElementById(this.parentId).append(article);
 	}
 
 	_onStateChange(event, state) {

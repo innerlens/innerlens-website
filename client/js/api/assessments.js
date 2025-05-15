@@ -41,12 +41,7 @@ class QuestionApi {
 	}
 
 	static async getAnsweredQuestions(assessmentId) {
-		let response = await ApiClient.get(`/api/response/${assessmentId}`);
-		if (response.status == 200) {
-			return response;
-		} else {
-			return [];
-		}
+		return await ApiClient.get(`/api/response/assessment/${assessmentId}`);
 	}
 }
 

@@ -6,19 +6,11 @@ import testState from "../state/testState.js";
 export const AppNavItems = {
 	[Page.LANDING]: {
 		signedIn: {
-			navLinks: [
-				"home-link",
-				"my-personality-link",
-				"information-link",
-			],
+			navLinks: ["home-link", "my-personality-link", "information-link"],
 			buttons: ["sign-out-button"],
 		},
 		signedOut: {
-			navLinks: [
-				"home-link",
-				"my-personality-link",
-				"information-link",
-			],
+			navLinks: ["home-link", "my-personality-link"],
 			buttons: ["sign-in-button"],
 		},
 	},

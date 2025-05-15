@@ -1,5 +1,3 @@
-import userApi from "../api/user.js";
-
 class AuthService {
 	isAuthenticated() {
 		return !!localStorage.getItem("userToken");

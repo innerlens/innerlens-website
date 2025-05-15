@@ -19,6 +19,21 @@ class TestState {
 	async updateQuestions() {
 		this.state.questions = await QuestionApi.getQuestionsWithOptions();
 		this.state.totalQuestions = this.state.questions.length;
+
+		const answeredQuestions = await QuestionApi.getAnsweredQuestions(
+			dataRetrievalService.assessmentId
+		);
+
+		console.log(answeredQuestions);
+
+		answeredQuestions.forEach((data, i) => {
+			this.state.answeredQuestions[i] = {
+				questionId: data.question_id,
+				answerId: data.question_option_id,
+				submitted: true,
+			};
+		});
+
 		this._updateCurrentQuestionPage();
 		this._notify(TestEvent.QUESTIONS_LOADED);
 	}
@@ -45,19 +60,17 @@ class TestState {
 		this.state.answeredQuestions.push({
 			questionId,
 			answerId: traitId,
+			submitted: false,
 		});
+
+		this.state.answeredQuestions.sort(
+			(a, b) => a.questionId - b.questionId
+		);
 
 		console.log(this.state);
 	}
 
-	goToNextPageIfComplete() {
-		// const answeredIds = new Set(
-		// 	this.state.answeredQuestions.map((q) => q.questionId)
-		// );
-		// const allAnswered = this.state.currentQuestions.every((q) =>
-		// 	answeredIds.has(q.id)
-		// );
-
+	allQuestionsAnswered() {
 		const allAnswered =
 			this.state.currentQuestionPage *
 				this.state.currentQuestions.length ===
@@ -67,10 +80,15 @@ class TestState {
 			alert(
 				"You must answer all questions on this page before continuing."
 			);
-			return;
+			return false;
 		}
 
-		// Update to next page only if there are more questions
+		return true;
+	}
+
+	goToNextPageIfComplete() {
+		if (!this.allQuestionsAnswered()) return;
+
 		const nextPageStartIndex = this.state.currentQuestionPage * 10;
 		if (nextPageStartIndex < this.state.questions.length) {
 			this.state.currentQuestionPage++;
@@ -78,18 +96,30 @@ class TestState {
 			this._notify(TestEvent.QUESTIONS_LOADED);
 			window.scrollTo({ top: 0, behavior: "smooth" });
 		}
+
+		this.submitAnswers();
+		return;
 	}
 
 	completeTest() {
-		this.state.answeredQuestions.forEach((data) => {
-			QuestionApi.submitAnswer(
-				dataRetrievalService.assessmentId,
-				data.questionId,
-				data.answerId
-			);
-		});
+		if (!this.allQuestionsAnswered()) return;
+
+		this.submitAnswers();
 
 		AssessmentApi.completeAssessment(dataRetrievalService.assessmentId);
+	}
+
+	submitAnswers() {
+		this.state.answeredQuestions.forEach((data) => {
+			if (!data.submitted) {
+				QuestionApi.submitAnswer(
+					dataRetrievalService.assessmentId,
+					data.questionId,
+					data.answerId
+				);
+				data.submitted = true;
+			}
+		});
 	}
 
 	saveProgress() {

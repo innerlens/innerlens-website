@@ -23,11 +23,15 @@ class Router {
 		}
 	}
 
-	newTest() {
+	async newTest() {
 		const state = appState.getState();
 
 		if (state.isUserSignedIn) {
-			AssessmentApi.createAssessment(dataRetrievalService.userId);
+			const response = await AssessmentApi.createAssessment(
+				dataRetrievalService.userId
+			);
+
+			dataRetrievalService.assessmentId = response.id;
 			this._redirect(Page.TEST);
 		} else {
 			this._redirect("");

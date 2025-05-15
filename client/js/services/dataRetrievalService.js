@@ -1,4 +1,5 @@
 import { AssessmentApi } from "../api/assessments.js";
+import personalityApi from "../api/personality.js";
 import userApi from "../api/user.js";
 import TestStatus from "../enums/testStatus.js";
 import appState from "../state/appState.js";
@@ -7,6 +8,7 @@ import authService from "./authService.js";
 class DataRetrievalService {
 	constructor() {
 		this.userId = null;
+		this.assessmentId = null;
 	}
 
 	async init() {
@@ -14,6 +16,8 @@ class DataRetrievalService {
 		if (!this.userId) return;
 
 		this._retrieveLatestTestResult();
+		this._loadPersonalityTraits();
+		this._loadPersonalityTypes();
 	}
 
 	async _retrieveId() {
@@ -26,6 +30,26 @@ class DataRetrievalService {
 		if (!this.userId) authService.logout();
 	}
 
+	async _loadPersonalityTypes() {
+		try {
+			const personalityTypes =
+				await personalityApi.getAllPersonalityTypes();
+			appState.setPersonalityTypes(personalityTypes);
+		} catch (error) {
+			console.error("Failed to load personality types:", error);
+		}
+	}
+
+	async _loadPersonalityTraits() {
+		try {
+			const personalityTraits =
+				await personalityApi.getAllPersonalityTraits();
+			appState.setPersonalityTraits(personalityTraits);
+		} catch (error) {
+			console.error("Failed to load personality traits:", error);
+		}
+	}
+
 	async _retrieveLatestTestResult() {
 		const assessments = await AssessmentApi.getUserAssessments(this.userId);
 
@@ -35,7 +59,15 @@ class DataRetrievalService {
 		if (!assessments || !assessments.length) {
 			testStatus = TestStatus.NOT_STARTED;
 		} else {
-			const latestAssessment = assessments[assessments.length - 1];
+			assessments.sort((a, b) => {
+				if (a.completed_at === null) return -1;
+				if (b.completed_at === null) return 1;
+				return new Date(b.completed_at) - new Date(a.completed_at);
+			});
+
+			console.log(assessments);
+
+			const latestAssessment = assessments[0];
 
 			this.assessmentId = latestAssessment.id;
 

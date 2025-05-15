@@ -5,7 +5,6 @@ import { assessmentResponseRepository } from "../repositories/assessmentResponse
 import { dichotomyRepository } from "../repositories/dichotomyRepository.js";
 import { traitRepository } from "../repositories/traitRepository.js";
 import { HTTP_STATUS } from "../utils/httpStatus.js";
-import { questionOptionRepository } from "../repositories/questionOptionRepository.js";
 
 export async function getAssessmentById(req, res) {
 	try {
