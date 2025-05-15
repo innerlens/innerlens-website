@@ -82,9 +82,7 @@ class TestPage {
 		if (testState.getState().currentPageIndex < 4) {
 			testState.goToNextPage();
 		} else {
-			if (await testState.completeTest()) {
-				router.gotoLanding();
-			}
+			testState.completeTest();
 		}
 	}
 

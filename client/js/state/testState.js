@@ -50,13 +50,23 @@ class TestState {
 	}
 
 	answerQuestion(questionId, answerId) {
-		const exists = this.state.answeredQuestions.has(questionId);
+		const existing = this.state.answeredQuestions.get(questionId);
 
-		this.state.answeredQuestions.set(questionId, {
-			answerId,
-			submitted: exists,
-			patch: exists,
-		});
+		if (existing != null) {
+			this.state.answeredQuestions.set(questionId, {
+				answerId,
+				submitted: existing.submitted,
+				patch: existing.referenceId != null,
+				referenceId: existing.referenceId,
+			});
+		} else {
+			this.state.answeredQuestions.set(questionId, {
+				answerId,
+				submitted: false,
+				patch: false,
+				referenceId: null,
+			});
+		}
 
 		this.state.answeredQuestions = new Map(
 			[...this.state.answeredQuestions.entries()].sort(
@@ -150,6 +160,9 @@ class TestState {
 			entry,
 		] of this.state.answeredQuestions.entries()) {
 			if (!entry.submitted) {
+				console.log("submitting");
+				console.log(entry);
+
 				const res = await QuestionApi.submitAnswer(
 					dataRetrievalService.assessmentId,
 					questionId,
@@ -158,7 +171,17 @@ class TestState {
 				entry.submitted = true;
 
 				console.log(res);
-			} else {
+			} else if (entry.patch) {
+				console.log("updating");
+
+				const res = await QuestionApi.updateAnswer(
+					entry.referenceId,
+					entry.answerId
+				);
+
+				console.log(res);
+				entry.submitted = true;
+				entry.patch = false;
 			}
 		}
 	}

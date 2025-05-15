@@ -40,6 +40,12 @@ class QuestionApi {
 		});
 	}
 
+	static async updateAnswer(referenceId, answerId) {
+		return await ApiClient.patch(`/api/response/${referenceId}`, {
+			question_option_id: answerId,
+		});
+	}
+
 	static async getAnsweredQuestions(assessmentId) {
 		return await ApiClient.get(`/api/response/assessment/${assessmentId}`);
 	}
