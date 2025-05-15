@@ -137,7 +137,7 @@ jobs:
 
             # start server
             pm2 stop all
-            pm2 start server.js --name innerlens
+            pm2 start server.js --name innerlens --cwd ~/innerlens-api/server
           '
 
       - name: Setup Nginx Proxy
