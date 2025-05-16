@@ -17,9 +17,17 @@ class HomeSection {
 	render(state) {
 		state = state || appState.getState();
 
+		const article =
+			document.getElementById(this.id) ||
+			createElement("article", { id: this.id });
+
+		clearElement(article);
+		document.getElementById(this.parentId).prepend(article);
+
 		const buttonObject =
-			HomeSectionItems[state.isUserSignedIn ? "signedIn" : "signedOut"]
-				.buttons;
+			HomeSectionItems[
+				!state.isUserSignedIn ? "signedOut" : state.testStatus
+			].buttons;
 
 		const button = createElement("button", {
 			className: buttonObject.class,
@@ -29,14 +37,7 @@ class HomeSection {
 			},
 		});
 
-		const article =
-			document.getElementById(this.id) ||
-			createElement("article", { id: this.id });
-
-		clearElement(article);
 		article.append(this._getSlogan(), button);
-
-		document.getElementById(this.parentId).append(article);
 	}
 
 	_getSlogan() {

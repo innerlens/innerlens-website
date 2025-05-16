@@ -31,8 +31,6 @@ class TestPage {
 		parent.appendChild(testPage);
 
 		if (questions && questions.length) {
-			console.log(state);
-
 			const answeredQuestions = state.answeredQuestions;
 
 			questions.forEach((data) => {
@@ -71,8 +69,6 @@ class TestPage {
 	}
 
 	_handleSelect(index, selectedOption) {
-		console.log(`Q${index}: ${selectedOption}`);
-
 		const [questionId, traidId] = selectedOption.split("-").map(Number);
 
 		testState.answerQuestion(questionId, traidId);
@@ -82,7 +78,10 @@ class TestPage {
 		if (testState.getState().currentPageIndex < 4) {
 			testState.goToNextPage();
 		} else {
-			testState.completeTest();
+			await testState.completeTest();
+			router.gotoLanding();
+			window.scrollTo({ top: 0, behavior: "smooth" });
+			window.location.reload();
 		}
 	}
 

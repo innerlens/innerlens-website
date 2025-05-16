@@ -67,8 +67,6 @@ class DataRetrievalService {
 				return new Date(b.completed_at) - new Date(a.completed_at);
 			});
 
-			console.log(assessments);
-
 			const latestAssessment = assessments[0];
 
 			this.assessmentId = latestAssessment.id;
@@ -89,8 +87,6 @@ class DataRetrievalService {
 
 				personalityAlias = response.name;
 				personalityDescription = response.description;
-
-				console.log(response);
 			}
 		}
 

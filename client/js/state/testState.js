@@ -26,6 +26,8 @@ class TestState {
 	}
 
 	async initialise() {
+		if (!dataRetrievalService.assessmentId) return;
+
 		const [questions, answered] = await Promise.all([
 			QuestionApi.getQuestionsWithOptions(),
 			QuestionApi.getAnsweredQuestions(dataRetrievalService.assessmentId),
@@ -45,8 +47,6 @@ class TestState {
 
 		this.#updatePageIndex();
 		this.setPage(this.state.currentPageIndex);
-
-		console.log(this.state);
 	}
 
 	answerQuestion(questionId, answerId) {
@@ -75,7 +75,6 @@ class TestState {
 		);
 
 		this.#notify(TestEvent.QUESTION_ANSWERED);
-		console.log(this.state);
 	}
 
 	allCurrentQuestionsAnswered() {
@@ -160,26 +159,17 @@ class TestState {
 			entry,
 		] of this.state.answeredQuestions.entries()) {
 			if (!entry.submitted) {
-				console.log("submitting");
-				console.log(entry);
-
-				const res = await QuestionApi.submitAnswer(
+				await QuestionApi.submitAnswer(
 					dataRetrievalService.assessmentId,
 					questionId,
 					entry.answerId
 				);
 				entry.submitted = true;
-
-				console.log(res);
 			} else if (entry.patch) {
-				console.log("updating");
-
-				const res = await QuestionApi.updateAnswer(
+				await QuestionApi.updateAnswer(
 					entry.referenceId,
 					entry.answerId
 				);
-
-				console.log(res);
 				entry.submitted = true;
 				entry.patch = false;
 			}
@@ -214,6 +204,11 @@ class TestState {
 				this.#resetState();
 				break;
 			case AppEvent.PAGE_CHANGED:
+				if (state.currentPage == Page.TEST && state.isUserSignedIn) {
+					this.initialise();
+				}
+				break;
+			case AppEvent.TEST_STATUS_CHANGED:
 				if (state.currentPage == Page.TEST && state.isUserSignedIn) {
 					this.initialise();
 				}
