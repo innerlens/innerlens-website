@@ -78,10 +78,11 @@ class TestPage {
 		if (testState.getState().currentPageIndex < 4) {
 			testState.goToNextPage();
 		} else {
-			await testState.completeTest();
-			router.gotoLanding();
-			window.scrollTo({ top: 0, behavior: "smooth" });
-			window.location.reload();
+			if (await testState.completeTest()) {
+				router.gotoLanding();
+				window.scrollTo({ top: 0, behavior: "smooth" });
+				window.location.reload();
+			}
 		}
 	}
 
