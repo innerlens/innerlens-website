@@ -78,3 +78,4 @@ class AppNav {
 
 const appNav = new AppNav();
 export default appNav;
+export { AppNav };

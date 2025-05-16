@@ -99,3 +99,4 @@ class MyPersonalitySection {
 
 const myPersonalitySection = new MyPersonalitySection();
 export default myPersonalitySection;
+export { MyPersonalitySection };
