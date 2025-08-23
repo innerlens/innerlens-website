@@ -33,7 +33,6 @@ export async function getGoogleJwt(req, res) {
 		const payload = await verifyGoogleJwt(jwt);
 		const { sub, email, name } = payload;
 
-		// check if user exists
 		const existingUser = await userRepository.findByKey("google_sub", sub);
 		if (!existingUser) {
 			await userRepository.create({
@@ -43,7 +42,6 @@ export async function getGoogleJwt(req, res) {
 			});
 		}
 
-		// return jwt
 		res.status(HTTP_STATUS.OK).json({ jwt });
 	} catch (err) {
 		console.error("Google Oauth failed:", err);
