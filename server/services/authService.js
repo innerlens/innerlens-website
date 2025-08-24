@@ -7,7 +7,6 @@ const JWKS = createRemoteJWKSet(new URL('https://www.googleapis.com/oauth2/v3/ce
 
 export async function verifyGoogleJwt(jwt) {
   try {
-    // verify jwt's signature and validate claims
     const { payload } = await jwtVerify(jwt, JWKS, {
       issuer: 'https://accounts.google.com',
       audience: process.env.GOOGLE_CLIENT_ID,
